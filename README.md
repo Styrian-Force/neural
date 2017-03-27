@@ -2,6 +2,9 @@
 
 This README would normally document whatever steps are necessary to get your application up and running.
 
+### Teoretično ozadje ###
+* [Povezava na urejanje članka](https://www.overleaf.com/8783020xmvxrqdxrjjx)
+
 ### What is this repository for? ###
 
 * Quick summary
