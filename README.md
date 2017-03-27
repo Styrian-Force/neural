@@ -1,4 +1,4 @@
-# README #
+# Interaktivni projekt s pomočjo uporabe konvolucijskih nevronskih mrež (CNN) #
 
 This README would normally document whatever steps are necessary to get your application up and running.
 
