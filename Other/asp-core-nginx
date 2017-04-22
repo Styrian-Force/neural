@@ -1,10 +1,17 @@
 Ubuntu 16.04
 
+######################################################
+#### INSTALL INSTRUCTIONS
+
 1. Install asp dotnet core:
 - https://www.microsoft.com/net/core#linuxubuntu
 
 2. Install and configure nginx server
 - https://docs.microsoft.com/en-us/aspnet/core/publishing/linuxproduction
+
+
+######################################################
+#### POST CONFIGURATION
 
 # service
 systemctl enable kestrel-hellomvc.service
@@ -20,4 +27,7 @@ sudo journalctl -fu kestrel-hellomvc.service
 
 # unzip
 sudo unzip /media/administrator/MY_IP/aspnetcore.zip -d /var/
+
+# copy
+sudo cp -r /media/administrator/MY_IP/butler /var/aspnetcore/butler/
 
