@@ -15,7 +15,6 @@ namespace butler
 
         public static void Main(string[] args)
         {
-            Console.WriteLine("HAHAHAHAHA!");
             startDetector();
 
             var host = new WebHostBuilder()
@@ -46,15 +45,6 @@ namespace butler
             process.Start();
 
             Program.detectorProcess = process;
-            //StreamWriter inputWriter = process.StandardInput;
-            //StreamReader outputReader = process.StandardOutput;
-            //StreamReader errorReader = process.StandardError;
-            //sw.AutoFlush = true;
-            //pro.BeginOutputReadLine();
-            //pro.OutputDataReceived += new DataReceivedEventHandler(pro_OutputDataReceived);
-            //sw.WriteLine("Neki");
-            //string a = sro.ReadLine();
-            //Debug.WriteLine("TUKI SN" + a);
         }
     }
 }

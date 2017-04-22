@@ -84,10 +84,18 @@ namespace butler.Controllers
                 StreamWriter inputWriter = Program.detectorProcess.StandardInput;
                 StreamReader outputReader = Program.detectorProcess.StandardOutput;
                 StreamReader errorReader = Program.detectorProcess.StandardError;
-                inputWriter.AutoFlush = true;
-                inputWriter.WriteLine(filePath.Substring(0, 8));
-                string a = outputReader.ReadLine();
-                Debug.WriteLine("TUKI SN" + a);
+                inputWriter.WriteLine(filePath);
+                inputWriter.Flush();
+                string exitStatus = "";
+                while(true) {
+                    char a = (char)outputReader.Read();
+                    if(a == '\n') {
+                        break;
+                    }
+                    exitStatus += a;
+                }
+                
+                Debug.WriteLine("POT_DO_DATOTEKE: " + exitStatus);
             }
 
             _logger.LogDebug(filePath + " successfully created.");
