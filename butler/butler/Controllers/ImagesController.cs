@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,7 +17,8 @@ namespace butler.Controllers
     [Route("api/[controller]")]
     public class ImagesController : Controller
     {
-        private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database/";
+        //private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database/";
+        private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database-local/";
         private readonly ILogger _logger;
 
         public ImagesController(ILogger<ImagesController> logger)
@@ -61,7 +63,7 @@ namespace butler.Controllers
                 _logger.LogError("File is null.");
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-            else if(file.Length <= 0)
+            else if (file.Length <= 0)
             {
                 _logger.LogError("File length is zero.");
                 return StatusCode(StatusCodes.Status400BadRequest);
@@ -73,11 +75,19 @@ namespace butler.Controllers
             {
                 Directory.CreateDirectory(filePath);
             }
-            
+
             filePath += "butler_output" + Path.GetExtension(file.FileName);
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 file.CopyTo(fileStream);
+
+                StreamWriter inputWriter = Program.detectorProcess.StandardInput;
+                StreamReader outputReader = Program.detectorProcess.StandardOutput;
+                StreamReader errorReader = Program.detectorProcess.StandardError;
+                inputWriter.AutoFlush = true;
+                inputWriter.WriteLine(filePath.Substring(0, 8));
+                string a = outputReader.ReadLine();
+                Debug.WriteLine("TUKI SN" + a);
             }
 
             _logger.LogDebug(filePath + " successfully created.");
