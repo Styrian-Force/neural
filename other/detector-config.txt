@@ -1,0 +1,17 @@
+DETECTOR CONFIG INSTRUCTIONS
+
+Ubuntu 16.04
+
+######################################################
+#### INSTALL CUDA
+
+1. Install CUDA for Ubuntu 16.04
+ - https://developer.nvidia.com/cuda-downloads
+
+sudo dpkg -i cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64.deb
+sudo apt-get update
+sudo apt-get install cuda
+
+2. Configure CUDA path
+Section 6.1:
+    -http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#mandatory-post
