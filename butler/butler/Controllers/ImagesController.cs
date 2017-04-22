@@ -16,7 +16,8 @@ namespace butler.Controllers
     [Route("api/[controller]")]
     public class ImagesController : Controller
     {
-        private readonly static string UPLOAD_DIRECTORY = "uploads/";
+        //private readonly static string UPLOAD_DIRECTORY = "uploads/";
+        private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database/";
         private readonly ILogger _logger;
 
         public ImagesController(ILogger<ImagesController> logger)
