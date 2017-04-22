@@ -16,11 +16,17 @@ namespace butler.Controllers
     [Route("api/[controller]")]
     public class ImagesController : Controller
     {
+        //private readonly static string UPLOAD_DIRECTORY = "uploads/";
+        private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database/";
         private readonly ILogger _logger;
 
         public ImagesController(ILogger<ImagesController> logger)
         {
             _logger = logger;
+            if (!Directory.Exists(UPLOAD_DIRECTORY))
+            {
+                Directory.CreateDirectory(UPLOAD_DIRECTORY);
+            }
         }
 
         // GET: api/values
@@ -48,46 +54,29 @@ namespace butler.Controllers
         public StatusCodeResult Post()
         {
             IFormFileCollection files = HttpContext.Request.Form.Files;
-            foreach(IFormFile file in files) {
-                _logger.LogInformation("\nFile: {0}", file.FileName);
+
+            IFormFile file = files.ToList().FirstOrDefault();
+
+            if (file == null)
+            {
+                _logger.LogError("File is null.");
+                return StatusCode(StatusCodes.Status400BadRequest);
             }
+            else if(file.Length <= 0)
+            {
+                _logger.LogError("File length is zero.");
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+
+            string filePath = UPLOAD_DIRECTORY;
+            filePath += string.Format("{0:yyyy-MM-dd_hh-mm-ss.fff}", DateTime.Now);
+            filePath += Path.GetExtension(file.FileName);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+
             return StatusCode(200);
-            /*try
-            {
-                if (file != null && file.Length > 0)
-                {
-                    try
-                    {
-
-                        byte[] data;
-                        using (var br = new BinaryReader(file.OpenReadStream()))
-                            data = br.ReadBytes((int)file.OpenReadStream().Length);
-
-                        ByteArrayContent bytes = new ByteArrayContent(data);
-
-
-                        MultipartFormDataContent multiContent = new MultipartFormDataContent();
-
-                        multiContent.Add(bytes, "file", file.FileName);
-
-                        //var result = client.PostAsync("api/Values", multiContent).Result;
-
-                        return StatusCode(200);
-
-                    }
-                    catch (Exception)
-                    {
-                        return StatusCode(500); // 500 is generic server error
-                    }
-                }
-
-                //return StatusCode(400); // 400 is bad request
-
-            }
-            catch (Exception)
-            {
-                return StatusCode(500); // 500 is generic server error
-            }*/
         }
 
         // PUT api/values/5
