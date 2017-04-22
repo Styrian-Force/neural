@@ -5,3 +5,19 @@ Ubuntu 16.04
 
 2. Install and configure nginx server
 - https://docs.microsoft.com/en-us/aspnet/core/publishing/linuxproduction
+
+# service
+systemctl enable kestrel-hellomvc.service
+systemctl start kestrel-hellomvc.service
+systemctl status kestrel-hellomvc.service
+
+## service restart
+systemctl restart kestrel-hellomvc.service
+systemctl daemon-reload
+
+# logs
+sudo journalctl -fu kestrel-hellomvc.service
+
+# unzip
+sudo unzip /media/administrator/MY_IP/aspnetcore.zip -d /var/
+
