@@ -16,7 +16,6 @@ namespace butler.Controllers
     [Route("api/[controller]")]
     public class ImagesController : Controller
     {
-        //private readonly static string UPLOAD_DIRECTORY = "uploads/";
         private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database/";
         private readonly ILogger _logger;
 
@@ -69,13 +68,19 @@ namespace butler.Controllers
             }
 
             string filePath = UPLOAD_DIRECTORY;
-            filePath += string.Format("{0:yyyy-MM-dd_hh-mm-ss.fff}", DateTime.Now);
-            filePath += Path.GetExtension(file.FileName);
+            filePath += string.Format("{0:yyyy-MM-dd_hh-mm-ss.fff}/", DateTime.Now);
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+            
+            filePath += "butler_output" + Path.GetExtension(file.FileName);
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 file.CopyTo(fileStream);
             }
 
+            _logger.LogDebug(filePath + " successfully created.");
             return StatusCode(200);
         }
 
