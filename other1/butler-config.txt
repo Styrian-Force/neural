@@ -11,7 +11,11 @@ Ubuntu 16.04
 
 
 ######################################################
-#### POST CONFIGURATION
+#### NGINX CONFIGURATION
+
+sudo systemctl start nginx 
+sudo systemctl stop nginx 
+sudo systemctl restart nginx
 
 # service
 systemctl enable kestrel-hellomvc.service

@@ -18,6 +18,8 @@ namespace butler
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .UseApplicationInsights()
+                // TODO: comment this line on publish
+                .UseUrls("http://localhost:5001")
                 .Build();
 
             host.Run();
