@@ -27,7 +27,17 @@ sudo journalctl -fu kestrel-hellomvc.service
 
 # unzip
 sudo unzip /media/administrator/MY_IP/aspnetcore.zip -d /var/
+sudo unzip /media/administrator/MY_IP/butler.zip -d /var/aspnetcore
 
 # copy
 sudo cp -r /media/administrator/MY_IP/butler /var/aspnetcore/butler/
+sudo cp -r /home/administrator/Downloads/builds/butler/ /var/aspnetcore/butler/
+
+
+######################################################
+#### DATABASE CONFIG
+# create dir
+mkdir /home/administartor/dev/neural/database/
+# chown dir 
+sudo chown -R www-data:www-data /home/administrator/dev/neural/database/
 
