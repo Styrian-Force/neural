@@ -1,0 +1,7 @@
+Ubuntu 16.04
+
+1. Install asp dotnet core:
+- https://www.microsoft.com/net/core#linuxubuntu
+
+2. Install and configure nginx server
+- https://docs.microsoft.com/en-us/aspnet/core/publishing/linuxproduction
