@@ -9,21 +9,33 @@ using System.Net.Http;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using butler.Services;
+using butler.Interfaces;
+using System.Threading;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace butler.Controllers
 {
+
+
     [Route("api/[controller]")]
     public class ImagesController : Controller
     {
         private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database/";
-        //private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database-local/";
-        private readonly ILogger _logger;
 
-        public ImagesController(ILogger<ImagesController> logger)
+
+        private readonly ILogger _logger;
+        private readonly IDetectorService _detectorService;
+
+        public ImagesController(
+            ILogger<ImagesController> logger,
+            IDetectorService detectorService
+            )
         {
             _logger = logger;
+            this._detectorService = detectorService;
+
             if (!Directory.Exists(UPLOAD_DIRECTORY))
             {
                 Directory.CreateDirectory(UPLOAD_DIRECTORY);
@@ -37,20 +49,12 @@ namespace butler.Controllers
             return new string[] { "valuei", "valueii" };
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
             return "value";
         }
 
-        // POST api/values
-        /*[HttpPost]
-        public string Post([FromBody]IFormFile image)
-        {
-            return "hallo";
-        }*/
-        private int counter = 0;
         [HttpPost]
         public StatusCodeResult Post()
         {
@@ -71,9 +75,15 @@ namespace butler.Controllers
 
             string workingDir = UPLOAD_DIRECTORY;
             workingDir += string.Format("{0:yyyy-MM-dd_hh-mm-ss.fff}/", DateTime.Now);
+            string subDir = workingDir + "detected_objects/";
+
             if (!Directory.Exists(workingDir))
             {
                 Directory.CreateDirectory(workingDir);
+            }
+            if (!Directory.Exists(subDir))
+            {
+                Directory.CreateDirectory(subDir);
             }
 
             string inputFilePath = workingDir + "butler_output" + Path.GetExtension(file.FileName);
@@ -82,23 +92,18 @@ namespace butler.Controllers
             {
                 file.CopyTo(fileStream);
 
-                StreamWriter inputWriter = Program.detectorProcess.StandardInput;
-                StreamReader outputReader = Program.detectorProcess.StandardOutput;
-                //StreamReader errorReader = Program.detectorProcess.StandardError;
-                inputWriter.WriteLine(inputFilePath);
-                inputWriter.WriteLine(workingDir);
-                inputWriter.Flush();
-                while(true) {
-                    string exitStatus = outputReader.ReadLine();
-                    Debug.WriteLine("POT_DO_DATOTEKE " + (counter++) + ": " + exitStatus);
-                    if(exitStatus == "FINISHED_SUCCESSFULLY") {
-                        Debug.WriteLine(exitStatus);
-                        break;
-                    }
-                }
+                Image image = new Image();
+                //image.JobId = 1;
+                image.WorkingDir = workingDir;
+                image.SubDir = subDir;
+                image.InputFilePath = inputFilePath;
+                image.task = new Task(() => {});
+
+                this._detectorService.AddToQueue(image);
+                image.task.Wait();
+                Console.WriteLine("KONEC IZVEDBE");
             }
 
-            _logger.LogDebug(inputFilePath + " successfully created.");
             return StatusCode(200);
         }
 

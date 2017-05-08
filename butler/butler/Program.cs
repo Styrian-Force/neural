@@ -19,7 +19,6 @@ namespace butler
 
         public static void Main(string[] args)
         {
-            startDetector();
             int port = SERVER_DEFAULT_PORT;
             if (args.Length > 0)
             {
@@ -38,46 +37,6 @@ namespace butler
 
             host.Run();
         }
-
-        private static void startDetector()
-        {
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.CreateNoWindow = false;
-            info.UseShellExecute = false;
-            info.RedirectStandardOutput = true;
-            info.RedirectStandardInput = true;
-            info.RedirectStandardError = true;
-            info.WorkingDirectory = "/home/administrator/dev/git/neural/detector";
-            info.FileName = info.WorkingDirectory + "/darknet";
-            info.Arguments = "detect cfg/tiny-yolo-voc.cfg weights/tiny-yolo-voc.weights";
-
-            Process process = new Process();
-            process.StartInfo = info;
-
-            Program.detectorProcess = process;
-
-            Thread newThread = new Thread(DoWork);
-            newThread.Start(process);
-        }
-
-        public static void DoWork(object data)
-        {
-            Process process = (Process)data;
-            process.Start();
-
-            StreamReader stdout = process.StandardOutput;
-            while (true)
-            {
-                string line = stdout.ReadLine();
-                if (line != null && line == "DETECTOR_READY")
-                {
-                    Console.WriteLine("DETECTOR IS READY");
-                    Program.detectorReady = true;
-                    break;
-                }
-            }
-
-            Console.WriteLine("DoWork thread finished! DetectorReady: " + Program.detectorReady);
-        }
     }
+    
 }

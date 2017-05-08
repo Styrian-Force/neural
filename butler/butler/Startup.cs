@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.HttpOverrides;
+using butler.Interfaces;
+using butler.Services;
 
 namespace butler
 {
@@ -30,6 +32,7 @@ namespace butler
         {
             // Add framework services.
             services.AddMvc();
+            services.AddSingleton<IDetectorService, DetectorService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

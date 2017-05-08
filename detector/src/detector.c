@@ -610,6 +610,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 	
 	char input[FILE_PATH_LENGTH];
 	char workingDir[FILE_PATH_LENGTH];
+	char subDir[FILE_PATH_LENGTH];
 	char output[FILE_PATH_LENGTH];
 	
 	int i;
@@ -620,6 +621,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         } else {
             fgets(input, FILE_PATH_LENGTH, stdin);
             fgets(workingDir, FILE_PATH_LENGTH, stdin);
+            fgets(subDir, FILE_PATH_LENGTH, stdin);
 
 		    /* remove newline, if present */
 		    i = strlen(input) - 1;
@@ -632,13 +634,15 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 		    i = strlen(workingDir) - 1;
 		    if (workingDir[i] == '\n')
 		        workingDir[i] = '\0';
+		        
+		    i = strlen(subDir) - 1;
+		    if (subDir[i] == '\n')
+		        subDir[i] = '\0';
 
 			strcpy(output, workingDir);
-			strcat(output, "detector_output");
-			
-			printf("%s\n", workingDir);
-		    fflush(stdout);       		    
-		    printf("%s\n", output);
+			strcat(output, "detector_output");			
+					    
+		    printf("%s\n", subDir);
 		    fflush(stdout);        
         }
         image im = load_image_color(input,0,0);
@@ -661,6 +665,9 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         //else if (nms) do_nms_sort(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, names, alphabet, l.classes);
+        
+        //printf("BOX: %d", boxes[0].x);
+        
         save_image(im, output);
         /*if(outfile){
             save_image(im, outfile);
