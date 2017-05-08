@@ -11,11 +11,17 @@ namespace butler
 {
     public class Program
     {
+        private static readonly int SERVER_DEFAULT_PORT = 5026;
+        private static readonly string SERVER_URL = "http://localhost";
         public static Process detectorProcess; 
 
         public static void Main(string[] args)
         {
-            startDetector();
+            //startDetector();
+            int port = SERVER_DEFAULT_PORT;
+            if(args.Length > 0) {
+                port = Int32.Parse(args[0]);
+            }            
 
             var host = new WebHostBuilder()
                 .UseKestrel()
@@ -23,8 +29,8 @@ namespace butler
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .UseApplicationInsights()
-                // TODO: comment this line on publish
-                .UseUrls("http://localhost:5001")
+                // Server port should be the same as in /etc/nginx/sites-available/default 
+                .UseUrls(SERVER_URL + ":" + port)
                 .Build();
 
             host.Run();

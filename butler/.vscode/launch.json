@@ -12,7 +12,7 @@
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceRoot}/butler/bin/Debug/netcoreapp1.1/butler.dll",
-            "args": [],
+            "args": ["5001"],
             "cwd": "${workspaceRoot}/butler",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",

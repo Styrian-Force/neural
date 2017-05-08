@@ -17,8 +17,8 @@ namespace butler.Controllers
     [Route("api/[controller]")]
     public class ImagesController : Controller
     {
-        //private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database/";
-        private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database-local/";
+        private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database/";
+        //private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database-local/";
         private readonly ILogger _logger;
 
         public ImagesController(ILogger<ImagesController> logger)
@@ -50,7 +50,7 @@ namespace butler.Controllers
         {
             return "hallo";
         }*/
-
+        private int counter = 0;
         [HttpPost]
         public StatusCodeResult Post()
         {
@@ -71,7 +71,7 @@ namespace butler.Controllers
 
             string filePath = UPLOAD_DIRECTORY;
             filePath += string.Format("{0:yyyy-MM-dd_hh-mm-ss.fff}/", DateTime.Now);
-            if (!Directory.Exists(filePath))
+            /*if (!Directory.Exists(filePath))
             {
                 Directory.CreateDirectory(filePath);
             }
@@ -83,20 +83,12 @@ namespace butler.Controllers
 
                 StreamWriter inputWriter = Program.detectorProcess.StandardInput;
                 StreamReader outputReader = Program.detectorProcess.StandardOutput;
-                StreamReader errorReader = Program.detectorProcess.StandardError;
+                //StreamReader errorReader = Program.detectorProcess.StandardError;
                 inputWriter.WriteLine(filePath);
                 inputWriter.Flush();
-                string exitStatus = "";
-                while(true) {
-                    char a = (char)outputReader.Read();
-                    if(a == '\n') {
-                        break;
-                    }
-                    exitStatus += a;
-                }
-                
-                Debug.WriteLine("POT_DO_DATOTEKE: " + exitStatus);
-            }
+                string exitStatus = outputReader.ReadLine();
+                Debug.WriteLine("POT_DO_DATOTEKE " + (counter++) + ": " + exitStatus);
+            }*/
 
             _logger.LogDebug(filePath + " successfully created.");
             return StatusCode(200);

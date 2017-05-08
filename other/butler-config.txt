@@ -12,7 +12,7 @@ Ubuntu 16.04
 
 ######################################################
 #### NGINX CONFIGURATION
-
+# use this gor nginx shutdown/up
 sudo systemctl start nginx 
 sudo systemctl stop nginx 
 sudo systemctl restart nginx
@@ -36,6 +36,13 @@ sudo unzip /media/administrator/MY_IP/butler.zip -d /var/aspnetcore
 # copy
 sudo cp -r /media/administrator/MY_IP/butler /var/aspnetcore/butler/
 sudo cp -r /home/administrator/Downloads/builds/butler/ /var/aspnetcore/butler/
+
+# publish
+cd ~/dev/git/neural/butler
+dotnet clean
+dotnet publish
+sudo cp -r /home/administrator/dev/git/neural/butler/butler/bin/Debug/netcoreapp1.1/publish/* /var/aspnetcore/butler/
+sudo systemctl restart kestrel-hellomvc.service
 
 
 ######################################################
