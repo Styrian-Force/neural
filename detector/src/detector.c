@@ -609,8 +609,8 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 	close(stdout_copy);
 	
 	char input[FILE_PATH_LENGTH];
-	char workingDir[FILE_PATH_LENGTH];
-	char subDir[FILE_PATH_LENGTH];
+	char working_dir[FILE_PATH_LENGTH];
+	char sub_dir[FILE_PATH_LENGTH];
 	char output[FILE_PATH_LENGTH];
 	
 	int i;
@@ -620,8 +620,8 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
             strncpy(input, filename, 256);
         } else {
             fgets(input, FILE_PATH_LENGTH, stdin);
-            fgets(workingDir, FILE_PATH_LENGTH, stdin);
-            fgets(subDir, FILE_PATH_LENGTH, stdin);
+            fgets(working_dir, FILE_PATH_LENGTH, stdin);
+            fgets(sub_dir, FILE_PATH_LENGTH, stdin);
 
 		    /* remove newline, if present */
 		    i = strlen(input) - 1;
@@ -631,18 +631,18 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 	        if(!input)
             	return;
 		    
-		    i = strlen(workingDir) - 1;
-		    if (workingDir[i] == '\n')
-		        workingDir[i] = '\0';
+		    i = strlen(working_dir) - 1;
+		    if (working_dir[i] == '\n')
+		        working_dir[i] = '\0';
 		        
-		    i = strlen(subDir) - 1;
-		    if (subDir[i] == '\n')
-		        subDir[i] = '\0';
+		    i = strlen(sub_dir) - 1;
+		    if (sub_dir[i] == '\n')
+		        sub_dir[i] = '\0';
 
-			strcpy(output, workingDir);
+			strcpy(output, working_dir);
 			strcat(output, "detector_output");			
 					    
-		    printf("%s\n", subDir);
+		    printf("%s\n", sub_dir);
 		    fflush(stdout);        
         }
         image im = load_image_color(input,0,0);
@@ -662,28 +662,13 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         network_predict(net, X);
         printf("%s: Predicted in %f seconds.\n", input, sec(clock()-time));
         get_region_boxes(l, im.w, im.h, net.w, net.h, thresh, probs, boxes, 0, 0, hier_thresh, 1);
-        if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
+        if (nms)  {
+	        do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
+        }
         //else if (nms) do_nms_sort(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, names, alphabet, l.classes);
-        
-        //printf("BOX: %d", boxes[0].x);
-        
+		save_cropped_images(im, l.w*l.h*l.n, thresh, boxes, probs, names, l.classes, sub_dir);
         save_image(im, output);
-        /*if(outfile){
-            save_image(im, outfile);
-        }
-        else{
-            save_image(im, "predictions");
-#ifdef OPENCV
-            cvNamedWindow("predictions", CV_WINDOW_NORMAL); 
-            if(fullscreen){
-                cvSetWindowProperty("predictions", CV_WND_PROP_FULLSCREEN, CV_WINDOW_FULLSCREEN);
-            }
-            show_image(im, "predictions");
-            cvWaitKey(0);
-            cvDestroyAllWindows();
-#endif
-        }*/
         
         printf("FINISHED_SUCCESSFULLY\n");
         fflush(stdout);

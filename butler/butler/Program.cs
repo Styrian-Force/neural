@@ -15,7 +15,6 @@ namespace butler
         private static readonly int SERVER_DEFAULT_PORT = 5026;
         private static readonly string SERVER_URL = "http://localhost";
         public static Process detectorProcess;
-        public static bool detectorReady = false;
 
         public static void Main(string[] args)
         {

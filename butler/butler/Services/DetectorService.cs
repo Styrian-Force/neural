@@ -71,12 +71,11 @@ namespace butler.Services
                 if (line != null && line == "DETECTOR_READY")
                 {
                     Console.WriteLine("DETECTOR IS READY");
-                    Program.detectorReady = true;
                     break;
                 }
             }
 
-            Console.WriteLine("DoWork thread finished! DetectorReady: " + Program.detectorReady);
+            Console.WriteLine("DoWork thread finished! DetectorReady!");
             this.HandleImages();
         }
 

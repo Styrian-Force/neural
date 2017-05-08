@@ -10,6 +10,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#define FILE_PATH_LENGTH 1024
+
 int windows = 0;
 
 float colors[6][3] = { {1,0,1}, {0,0,1},{0,1,1},{0,1,0},{1,1,0},{1,0,0} };
@@ -178,7 +180,7 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
     for(i = 0; i < num; ++i){
         int class = max_index(probs[i], classes);
         float prob = probs[i][class];
-        if(prob > thresh){
+        if(prob > thresh) {
 
             int width = im.h * .012;
 
@@ -212,8 +214,6 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             if(top < 0) top = 0;
             if(bot > im.h-1) bot = im.h-1;
 
-			printf("BOX-%d: %d\n", i, b.x);
-
             draw_box_width(im, left, top, right, bot, width, red, green, blue);
             if (alphabet) {
                 image label = get_label(alphabet, names[class], (im.h*.03)/10);
@@ -221,6 +221,44 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             }
         }
     }
+}
+
+void save_cropped_images(image im, int num, float thresh, box *boxes, float **probs, char **names, int classes, char* sub_dir) {
+	int i;	
+  	char output_cropped[FILE_PATH_LENGTH];
+
+    for(i = 0; i < num; ++i){
+        int class = max_index(probs[i], classes);
+        float prob = probs[i][class];
+        
+        if(prob <= thresh){
+        	continue;
+        }
+        
+     	int width = im.h * .012;
+        
+		box b = boxes[i];
+
+        int left  = (b.x-b.w/2.)*im.w;
+        int right = (b.x+b.w/2.)*im.w;
+        int top   = (b.y-b.h/2.)*im.h;
+        int bot   = (b.y+b.h/2.)*im.h;
+
+        if(left < 0) left = 0;
+        if(right > im.w-1) right = im.w-1;
+        if(top < 0) top = 0;
+        if(bot > im.h-1) bot = im.h-1;
+
+        printf("BOX-%d: %d %d %d %d\n", i, left, top, right-left, bot - top);
+		image cropped_image = crop_image(im, left, top, right-left, bot - top);
+		
+		char int_to_string[15];
+		sprintf(int_to_string, "%d", i);
+		strcpy(output_cropped, sub_dir);
+		strcat(output_cropped, int_to_string);
+        printf("BOX-%d: %s\n", i, output_cropped);
+		save_image(cropped_image, output_cropped);
+  	}
 }
 
 void transpose_image(image im)
