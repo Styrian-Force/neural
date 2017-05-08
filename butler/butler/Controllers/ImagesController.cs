@@ -71,7 +71,7 @@ namespace butler.Controllers
 
             string filePath = UPLOAD_DIRECTORY;
             filePath += string.Format("{0:yyyy-MM-dd_hh-mm-ss.fff}/", DateTime.Now);
-            /*if (!Directory.Exists(filePath))
+            if (!Directory.Exists(filePath))
             {
                 Directory.CreateDirectory(filePath);
             }
@@ -88,7 +88,7 @@ namespace butler.Controllers
                 inputWriter.Flush();
                 string exitStatus = outputReader.ReadLine();
                 Debug.WriteLine("POT_DO_DATOTEKE " + (counter++) + ": " + exitStatus);
-            }*/
+            }
 
             _logger.LogDebug(filePath + " successfully created.");
             return StatusCode(200);

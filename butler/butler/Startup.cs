@@ -33,8 +33,9 @@ namespace butler
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime applicationLifetime)
         {
+            applicationLifetime.ApplicationStopping.Register(OnShutdown);
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddConsole().AddDebug();
 
@@ -44,6 +45,11 @@ namespace butler
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
+        }
+
+        public void OnShutdown() {
+            Console.WriteLine("SERVER_STOPPED");
+            Program.detectorProcess.Kill();
         }
     }
 }
