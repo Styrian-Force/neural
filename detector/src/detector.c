@@ -8,6 +8,8 @@
 #include "option_list.h"
 #include "blas.h"
 
+#define FILE_PATH_LENGTH 1024
+
 static int coco_ids[] = {1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,27,28,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,67,70,72,73,74,75,76,77,78,79,80,81,82,84,85,86,87,88,89,90};
 
 void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear)
@@ -595,18 +597,49 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
     srand(2222222);
     clock_t time;
     char buff[256];
-    char *input = buff;
+    //char *input = buff;
     int j;
     float nms=.4;
+	
+	printf("DETECTOR_READY\n");
+	fflush(stdout);
+	int stdout_copy = dup(1);
+	close(1);        
+	dup2(stdout_copy, 1);
+	close(stdout_copy);
+	
+	char input[FILE_PATH_LENGTH];
+	char workingDir[FILE_PATH_LENGTH];
+	char output[FILE_PATH_LENGTH];
+	
+	int i;
+
     while(1){
         if(filename){
             strncpy(input, filename, 256);
         } else {
-            printf("Enter Image Path: ");
-            fflush(stdout);
-            input = fgets(input, 256, stdin);
-            if(!input) return;
-            strtok(input, "\n");
+            fgets(input, FILE_PATH_LENGTH, stdin);
+            fgets(workingDir, FILE_PATH_LENGTH, stdin);
+
+		    /* remove newline, if present */
+		    i = strlen(input) - 1;
+		    if (input[i] == '\n')
+		        input[i] = '\0';
+		        
+	        if(!input)
+            	return;
+		    
+		    i = strlen(workingDir) - 1;
+		    if (workingDir[i] == '\n')
+		        workingDir[i] = '\0';
+
+			strcpy(output, workingDir);
+			strcat(output, "detector_output");
+			
+			printf("%s\n", workingDir);
+		    fflush(stdout);       		    
+		    printf("%s\n", output);
+		    fflush(stdout);        
         }
         image im = load_image_color(input,0,0);
         image sized = letterbox_image(im, net.w, net.h);
@@ -628,7 +661,8 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         //else if (nms) do_nms_sort(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, names, alphabet, l.classes);
-        if(outfile){
+        save_image(im, output);
+        /*if(outfile){
             save_image(im, outfile);
         }
         else{
@@ -642,7 +676,14 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
             cvWaitKey(0);
             cvDestroyAllWindows();
 #endif
-        }
+        }*/
+        
+        printf("FINISHED_SUCCESSFULLY\n");
+        fflush(stdout);
+        int stdout_copy = dup(1);
+		close(1);        
+	    dup2(stdout_copy, 1);
+       	close(stdout_copy);
 
         free_image(im);
         free_image(sized);
@@ -697,6 +738,7 @@ void run_detector(int argc, char **argv)
     char *cfg = argv[4];
     char *weights = (argc > 5) ? argv[5] : 0;
     char *filename = (argc > 6) ? argv[6]: 0;
+
     if(0==strcmp(argv[2], "test")) test_detector(datacfg, cfg, weights, filename, thresh, hier_thresh, outfile, fullscreen);
     else if(0==strcmp(argv[2], "train")) train_detector(datacfg, cfg, weights, gpus, ngpus, clear);
     else if(0==strcmp(argv[2], "valid")) validate_detector(datacfg, cfg, weights, outfile);

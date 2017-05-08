@@ -69,28 +69,36 @@ namespace butler.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            string filePath = UPLOAD_DIRECTORY;
-            filePath += string.Format("{0:yyyy-MM-dd_hh-mm-ss.fff}/", DateTime.Now);
-            if (!Directory.Exists(filePath))
+            string workingDir = UPLOAD_DIRECTORY;
+            workingDir += string.Format("{0:yyyy-MM-dd_hh-mm-ss.fff}/", DateTime.Now);
+            if (!Directory.Exists(workingDir))
             {
-                Directory.CreateDirectory(filePath);
+                Directory.CreateDirectory(workingDir);
             }
 
-            filePath += "butler_output" + Path.GetExtension(file.FileName);
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            string inputFilePath = workingDir + "butler_output" + Path.GetExtension(file.FileName);
+
+            using (var fileStream = new FileStream(inputFilePath, FileMode.Create))
             {
                 file.CopyTo(fileStream);
 
                 StreamWriter inputWriter = Program.detectorProcess.StandardInput;
                 StreamReader outputReader = Program.detectorProcess.StandardOutput;
                 //StreamReader errorReader = Program.detectorProcess.StandardError;
-                inputWriter.WriteLine(filePath);
+                inputWriter.WriteLine(inputFilePath);
+                inputWriter.WriteLine(workingDir);
                 inputWriter.Flush();
-                string exitStatus = outputReader.ReadLine();
-                Debug.WriteLine("POT_DO_DATOTEKE " + (counter++) + ": " + exitStatus);
+                while(true) {
+                    string exitStatus = outputReader.ReadLine();
+                    Debug.WriteLine("POT_DO_DATOTEKE " + (counter++) + ": " + exitStatus);
+                    if(exitStatus == "FINISHED_SUCCESSFULLY") {
+                        Debug.WriteLine(exitStatus);
+                        break;
+                    }
+                }
             }
 
-            _logger.LogDebug(filePath + " successfully created.");
+            _logger.LogDebug(inputFilePath + " successfully created.");
             return StatusCode(200);
         }
 
