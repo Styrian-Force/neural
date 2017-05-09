@@ -27,6 +27,7 @@ namespace Butler.Controllers
         private readonly ILogger _logger;
         private readonly IDetectorService _detectorService;
         private readonly IArtistService _artistService;
+        private readonly IImageService _imageService;
         private readonly IIdService _idService;
 
 
@@ -34,13 +35,15 @@ namespace Butler.Controllers
             ILogger<ImagesController> logger,
             IDetectorService detectorService,
             IArtistService artistService,
+            IImageService imageService,
             IIdService idService
             )
         {
             this._logger = logger;
             this._detectorService = detectorService;
-            this._idService = idService;
+            this._imageService = imageService;
             this._artistService = artistService;
+            this._idService = idService;
 
             CreateDir(UPLOAD_DIRECTORY);
         }
@@ -101,14 +104,16 @@ namespace Butler.Controllers
 
                 this._detectorService.AddToQueue(imageTask);
                 imageTask.task.Wait();
-
                 Console.WriteLine("DETECTOR_END");
+
                 imageTask.task = new Task(() => { });
 
                 this._artistService.AddToQueue(imageTask);
                 imageTask.task.Wait();
-
                 Console.WriteLine("ARTIST_END");
+
+                this._imageService.MergeImages(imageTask);
+                Console.WriteLine("IMAGE_SERVICE_END");
             }
 
             return StatusCode(200);

@@ -34,7 +34,8 @@ namespace butler
             services.AddMvc();
             services.AddSingleton<IDetectorService, DetectorService>();
             services.AddSingleton<IArtistService, ArtistService>();
-            services.AddSingleton<IIdService, IdService>();
+            services.AddSingleton<IImageService, ImageService>();
+            services.AddSingleton<IIdService, IdService>();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
