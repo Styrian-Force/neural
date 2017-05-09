@@ -4,18 +4,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using butler.Interfaces;
-using butler.Models;
+using Butler.Interfaces;
+using Butler.Models;
 using Microsoft.Extensions.Logging;
 
-namespace butler.Services
+namespace Butler.Services
 {
     public class DetectorService : IDetectorService
     {
         ILogger<DetectorService> _logger;
 
         private Process detectorProcess;
-        private Queue<Image> queue;
+        private Queue<ImageTask> queue;
 
         public DetectorService(
             ILogger<DetectorService> logger
@@ -32,14 +32,14 @@ namespace butler.Services
             detectorThread.Start(process);
 
             this._logger = logger;
-            this.queue = new Queue<Image>();
+            this.queue = new Queue<ImageTask>();
         }
 
-        public void AddToQueue(Image image)
+        public void AddToQueue(ImageTask imageTask)
         {
             lock (queue)
             {
-                queue.Enqueue(image);
+                queue.Enqueue(imageTask);
             }
         }
 
@@ -85,25 +85,27 @@ namespace butler.Services
         {
             while (true)
             {
-                Image image = null;
+                ImageTask imageTask = null;
 
                 lock (queue)
                 {
                     if (queue.Count > 0)
                     {
-                        image = queue.Dequeue();
+                        imageTask = queue.Dequeue();
                     }
                 }
 
-                if (image != null)
+                if (imageTask != null)
                 {
                     StreamWriter inputWriter = this.detectorProcess.StandardInput;
                     StreamReader outputReader = this.detectorProcess.StandardOutput;
 
-                    inputWriter.WriteLine(image.InputFilePath);
-                    inputWriter.WriteLine(image.WorkingDir);
-                    inputWriter.WriteLine(image.SubDir);
+                    inputWriter.WriteLine(imageTask.InputFilePath);
+                    inputWriter.WriteLine(imageTask.WorkingDir);
+                    inputWriter.WriteLine(imageTask.SubDir);
                     inputWriter.Flush();
+
+                    List<Image> croppedImages = new List<Image>();
                     while (true)
                     {
                         string message = outputReader.ReadLine();
@@ -113,12 +115,38 @@ namespace butler.Services
                             Debug.WriteLine(message);
                             break;
                         }
+                        if (message.Contains("BOX"))
+                        {
+                            Image image = ParseImage(message);
+                            croppedImages.Add(image);
+                        }
                     }
-                    _logger.LogDebug(image.InputFilePath + " successfully created.");
-                    Console.WriteLine("ID:" + image.JobId);
-                    image.task.Start();
+                    imageTask.CroppedImages = croppedImages;
+                    _logger.LogDebug(imageTask.InputFilePath + " successfully created.");
+                    Console.WriteLine("ID:" + imageTask.JobId);
+                    imageTask.task.Start();
                 }
             }
+        }
+
+        private Image ParseImage(string message)
+        {
+            int index = message.IndexOf("BOX");
+            if (index != -1)
+            {
+                message = message.Substring(3);
+            }
+
+            string[] fields = message.Trim().Split();
+
+            Image image = new Image();
+            image.Id = int.Parse(fields[0]);
+            image.Left = int.Parse(fields[1]);
+            image.Top = int.Parse(fields[2]);
+            image.Width = int.Parse(fields[3]);
+            image.Heigth = int.Parse(fields[4]);
+
+            return image;
         }
 
     }

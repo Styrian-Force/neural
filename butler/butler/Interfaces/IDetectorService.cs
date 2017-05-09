@@ -2,13 +2,13 @@
 
 using System.Diagnostics;
 using System.IO;
-using butler.Models;
+using Butler.Models;
 
-namespace butler.Interfaces
+namespace Butler.Interfaces
 {
     public interface IDetectorService
     {
-        void AddToQueue(Image image);
+        void AddToQueue(ImageTask imageTask);
 
     }
 }

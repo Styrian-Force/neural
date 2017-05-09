@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using butler.Models;
+using Butler.Models;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using System.IO;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using butler.Services;
-using butler.Interfaces;
+using Butler.Services;
+using Butler.Interfaces;
 using System.Threading;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace butler.Controllers
+namespace Butler.Controllers
 {
 
 
@@ -95,15 +95,16 @@ namespace butler.Controllers
             {
                 file.CopyTo(fileStream);
 
-                Image image = new Image();
-                image.JobId = this._idService.GenerateId();
-                image.WorkingDir = workingDir;
-                image.SubDir = subDir;
-                image.InputFilePath = inputFilePath;
-                image.task = new Task(() => {});
+                ImageTask imageTask = new ImageTask();
+                imageTask.JobId = this._idService.GenerateId();
+                imageTask.WorkingDir = workingDir;
+                imageTask.SubDir = subDir;
+                imageTask.InputFilePath = inputFilePath;
+                imageTask.task = new Task(() => {});
 
-                this._detectorService.AddToQueue(image);
-                image.task.Wait();
+                this._detectorService.AddToQueue(imageTask);
+                imageTask.task.Wait();              
+
                 Console.WriteLine("KONEC IZVEDBE");
             }
 

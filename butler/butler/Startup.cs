@@ -8,8 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.HttpOverrides;
-using butler.Interfaces;
-using butler.Services;
+using Butler.Interfaces;
+using Butler.Services;
 
 namespace butler
 {

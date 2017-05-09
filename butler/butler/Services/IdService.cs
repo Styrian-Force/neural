@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using butler.Interfaces;
+using Butler.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace butler.Services
+namespace Butler.Services
 {
     public class IdService : IIdService
     {

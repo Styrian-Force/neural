@@ -2,9 +2,9 @@
 
 using System.Diagnostics;
 using System.IO;
-using butler.Models;
+using Butler.Models;
 
-namespace butler.Interfaces
+namespace Butler.Interfaces
 {
     public interface IIdService
     {
