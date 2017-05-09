@@ -33,6 +33,7 @@ namespace butler
             // Add framework services.
             services.AddMvc();
             services.AddSingleton<IDetectorService, DetectorService>();
+            services.AddSingleton<IArtistService, ArtistService>();
             services.AddSingleton<IIdService, IdService>();
         }
 

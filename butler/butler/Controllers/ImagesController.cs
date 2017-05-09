@@ -24,25 +24,25 @@ namespace Butler.Controllers
     {
         private readonly static string UPLOAD_DIRECTORY = "/home/administrator/dev/neural/database/";
 
-
         private readonly ILogger _logger;
         private readonly IDetectorService _detectorService;
+        private readonly IArtistService _artistService;
         private readonly IIdService _idService;
+
 
         public ImagesController(
             ILogger<ImagesController> logger,
             IDetectorService detectorService,
+            IArtistService artistService,
             IIdService idService
             )
         {
-            _logger = logger;
+            this._logger = logger;
             this._detectorService = detectorService;
             this._idService = idService;
+            this._artistService = artistService;
 
-            if (!Directory.Exists(UPLOAD_DIRECTORY))
-            {
-                Directory.CreateDirectory(UPLOAD_DIRECTORY);
-            }
+            CreateDir(UPLOAD_DIRECTORY);
         }
 
         // GET: api/values
@@ -78,16 +78,12 @@ namespace Butler.Controllers
 
             string workingDir = UPLOAD_DIRECTORY;
             workingDir += string.Format("{0:yyyy-MM-dd_HH-mm-ss.fff}/", DateTime.Now);
-            string subDir = workingDir + "detected_objects/";
+            string detectorDir = workingDir + "detector/";
+            string artistDir = workingDir + "artist/";
 
-            if (!Directory.Exists(workingDir))
-            {
-                Directory.CreateDirectory(workingDir);
-            }
-            if (!Directory.Exists(subDir))
-            {
-                Directory.CreateDirectory(subDir);
-            }
+            CreateDir(workingDir);
+            CreateDir(detectorDir);
+            CreateDir(artistDir);
 
             string inputFilePath = workingDir + "butler_output" + Path.GetExtension(file.FileName);
 
@@ -98,14 +94,21 @@ namespace Butler.Controllers
                 ImageTask imageTask = new ImageTask();
                 imageTask.JobId = this._idService.GenerateId();
                 imageTask.WorkingDir = workingDir;
-                imageTask.SubDir = subDir;
+                imageTask.DetectorDir = detectorDir;
+                imageTask.ArtistDir = artistDir;
                 imageTask.InputFilePath = inputFilePath;
-                imageTask.task = new Task(() => {});
+                imageTask.task = new Task(() => { });
 
                 this._detectorService.AddToQueue(imageTask);
-                imageTask.task.Wait();              
+                imageTask.task.Wait();
 
-                Console.WriteLine("KONEC IZVEDBE");
+                Console.WriteLine("DETECTOR_END");
+                imageTask.task = new Task(() => { });
+
+                this._artistService.AddToQueue(imageTask);
+                imageTask.task.Wait();
+
+                Console.WriteLine("ARTIST_END");
             }
 
             return StatusCode(200);
@@ -121,6 +124,14 @@ namespace Butler.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        private void CreateDir(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
         }
     }
 }

@@ -21,11 +21,11 @@ namespace Butler.Services
             ILogger<DetectorService> logger
         )
         {
-            Console.WriteLine("HERE!: DetectorService konstruktor");
+            Console.WriteLine("DETECTOR_SERVICE: DetectorService konstruktor");
 
             // start detector process
             Process process = new Process();
-            process.StartInfo = InitDetectorProcessInfo();
+            process.StartInfo = GetDetectorProcessInfo();
             this.detectorProcess = process;
 
             Thread detectorThread = new Thread(StartDetector);
@@ -43,7 +43,7 @@ namespace Butler.Services
             }
         }
 
-        private ProcessStartInfo InitDetectorProcessInfo()
+        private ProcessStartInfo GetDetectorProcessInfo()
         {
             ProcessStartInfo info = new ProcessStartInfo();
 
@@ -76,12 +76,12 @@ namespace Butler.Services
             }
 
             Console.WriteLine("DoWork thread finished! DetectorReady!");
-            this.HandleImages();
+            this.HandleQueue();
         }
 
         private int counter = 0;
 
-        private void HandleImages()
+        private void HandleQueue()
         {
             while (true)
             {
@@ -102,7 +102,7 @@ namespace Butler.Services
 
                     inputWriter.WriteLine(imageTask.InputFilePath);
                     inputWriter.WriteLine(imageTask.WorkingDir);
-                    inputWriter.WriteLine(imageTask.SubDir);
+                    inputWriter.WriteLine(imageTask.DetectorDir);
                     inputWriter.Flush();
 
                     List<Image> croppedImages = new List<Image>();
@@ -111,8 +111,7 @@ namespace Butler.Services
                         string message = outputReader.ReadLine();
                         Debug.WriteLine("DETECTOR_OUTPUT " + (counter++) + ": " + message);
                         if (message == "FINISHED_SUCCESSFULLY")
-                        {
-                            Debug.WriteLine(message);
+                        {                            
                             break;
                         }
                         if (message.Contains("BOX"))

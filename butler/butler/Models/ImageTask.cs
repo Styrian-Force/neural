@@ -11,7 +11,8 @@ namespace Butler.Models
         public string JobId { get; set; }
         public List<Image> CroppedImages { get; set; }
         public string WorkingDir { get; set; }
-        public string SubDir { get; set; }
+        public string DetectorDir { get; set; }
+        public string ArtistDir { get; set; }
         public string InputFilePath { get; set; }
         public Task task { get; set; }
     }
