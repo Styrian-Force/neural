@@ -1,0 +1,75 @@
+{
+	"variables": [],
+	"info": {
+		"name": "neural",
+		"_postman_id": "d1529e05-6a43-da19-27ab-df0a268b2b81",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET All Values",
+			"request": {
+				"url": "localhost/api/values",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "POST image 5001",
+			"request": {
+				"url": "localhost:5001/api/images",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"enabled": true,
+							"src": "Ziesel.postman_collection.json"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET All Values 5001",
+			"request": {
+				"url": "localhost:5001/api/values",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "POST image",
+			"request": {
+				"url": "localhost/api/images",
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"enabled": true,
+							"src": "dog.jpg"
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
