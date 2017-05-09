@@ -100,7 +100,7 @@ namespace Butler.Services
                     StreamWriter inputWriter = this.detectorProcess.StandardInput;
                     StreamReader outputReader = this.detectorProcess.StandardOutput;
 
-                    inputWriter.WriteLine(imageTask.InputFilePath);
+                    inputWriter.WriteLine(imageTask.OriginalImagePath);
                     inputWriter.WriteLine(imageTask.WorkingDir);
                     inputWriter.WriteLine(imageTask.DetectorDir);
                     inputWriter.Flush();
@@ -121,7 +121,7 @@ namespace Butler.Services
                         }
                     }
                     imageTask.CroppedImages = croppedImages;
-                    _logger.LogDebug(imageTask.InputFilePath + " successfully created.");
+                    _logger.LogDebug(imageTask.OriginalImagePath + " successfully created.");
                     Console.WriteLine("ID:" + imageTask.JobId);
                     imageTask.task.Start();
                 }

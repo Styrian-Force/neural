@@ -52,3 +52,10 @@ mkdir /home/administartor/dev/neural/database/
 # chown dir 
 sudo chown -R www-data:www-data /home/administrator/dev/neural/database/
 
+######################################################
+#### NUGET PACKAGES
+
+cd ~/dev/git/neural/butler/butler
+# ImageSharp
+dotnet add package ImageSharp --version 1.0.0-alpha9-00025 --source https://www.myget.org/F/imagesharp/api/v3/index.json
+

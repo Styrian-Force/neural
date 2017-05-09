@@ -88,9 +88,9 @@ namespace Butler.Controllers
             CreateDir(detectorDir);
             CreateDir(artistDir);
 
-            string inputFilePath = workingDir + "butler_output" + Path.GetExtension(file.FileName);
+            string originalImagePath = workingDir + "butler_output" + Path.GetExtension(file.FileName);
 
-            using (var fileStream = new FileStream(inputFilePath, FileMode.Create))
+            using (var fileStream = new FileStream(originalImagePath, FileMode.Create))
             {
                 file.CopyTo(fileStream);
 
@@ -99,7 +99,7 @@ namespace Butler.Controllers
                 imageTask.WorkingDir = workingDir;
                 imageTask.DetectorDir = detectorDir;
                 imageTask.ArtistDir = artistDir;
-                imageTask.InputFilePath = inputFilePath;
+                imageTask.OriginalImagePath = originalImagePath;
                 imageTask.task = new Task(() => { });
 
                 this._detectorService.AddToQueue(imageTask);

@@ -13,7 +13,7 @@ namespace Butler.Models
         public string WorkingDir { get; set; }
         public string DetectorDir { get; set; }
         public string ArtistDir { get; set; }
-        public string InputFilePath { get; set; }
+        public string OriginalImagePath { get; set; }
         public Task task { get; set; }
     }
 }

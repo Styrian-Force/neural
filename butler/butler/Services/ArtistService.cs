@@ -13,7 +13,7 @@ namespace Butler.Services
     public class ArtistService : IArtistService
     {
         private static readonly string DEVICE = "/cpu:0";
-        private static readonly int MAX_ITERATIONS = 3;
+        private static readonly int MAX_ITERATIONS = 20;
         private static readonly int PRINT_ITERATIONS = 1;
 
         ILogger<ArtistService> _logger;
