@@ -666,9 +666,9 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 	        do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         }
         //else if (nms) do_nms_sort(boxes, probs, l.w*l.h*l.n, l.classes, nms);
+        save_cropped_images(im, l.w*l.h*l.n, thresh, boxes, probs, names, l.classes, sub_dir);
         draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, names, alphabet, l.classes);
-		save_cropped_images(im, l.w*l.h*l.n, thresh, boxes, probs, names, l.classes, sub_dir);
-        save_image(im, output);
+	    save_image(im, output);
         
         printf("FINISHED_SUCCESSFULLY\n");
         fflush(stdout);

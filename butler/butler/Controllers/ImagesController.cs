@@ -27,14 +27,17 @@ namespace butler.Controllers
 
         private readonly ILogger _logger;
         private readonly IDetectorService _detectorService;
+        private readonly IIdService _idService;
 
         public ImagesController(
             ILogger<ImagesController> logger,
-            IDetectorService detectorService
+            IDetectorService detectorService,
+            IIdService idService
             )
         {
             _logger = logger;
             this._detectorService = detectorService;
+            this._idService = idService;
 
             if (!Directory.Exists(UPLOAD_DIRECTORY))
             {
@@ -74,7 +77,7 @@ namespace butler.Controllers
             }
 
             string workingDir = UPLOAD_DIRECTORY;
-            workingDir += string.Format("{0:yyyy-MM-dd_hh-mm-ss.fff}/", DateTime.Now);
+            workingDir += string.Format("{0:yyyy-MM-dd_HH-mm-ss.fff}/", DateTime.Now);
             string subDir = workingDir + "detected_objects/";
 
             if (!Directory.Exists(workingDir))
@@ -93,7 +96,7 @@ namespace butler.Controllers
                 file.CopyTo(fileStream);
 
                 Image image = new Image();
-                //image.JobId = 1;
+                image.JobId = this._idService.GenerateId();
                 image.WorkingDir = workingDir;
                 image.SubDir = subDir;
                 image.InputFilePath = inputFilePath;

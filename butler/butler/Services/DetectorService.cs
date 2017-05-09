@@ -107,7 +107,7 @@ namespace butler.Services
                     while (true)
                     {
                         string message = outputReader.ReadLine();
-                        Debug.WriteLine("POT_DO_DATOTEKE " + (counter++) + ": " + message);
+                        Debug.WriteLine("DETECTOR_OUTPUT " + (counter++) + ": " + message);
                         if (message == "FINISHED_SUCCESSFULLY")
                         {
                             Debug.WriteLine(message);
@@ -115,6 +115,7 @@ namespace butler.Services
                         }
                     }
                     _logger.LogDebug(image.InputFilePath + " successfully created.");
+                    Console.WriteLine("ID:" + image.JobId);
                     image.task.Start();
                 }
             }

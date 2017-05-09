@@ -249,8 +249,8 @@ void save_cropped_images(image im, int num, float thresh, box *boxes, float **pr
         if(top < 0) top = 0;
         if(bot > im.h-1) bot = im.h-1;
 
-        printf("BOX-%d: %d %d %d %d\n", i, left, top, right-left, bot - top);
-		image cropped_image = crop_image(im, left, top, right-left, bot - top);
+        printf("BOX-%d: %d %d %d %d\n", i, left, top, right-left, bot-top);
+		image cropped_image = crop_image(im, left, top, right-left, bot-top);
 		
 		char int_to_string[15];
 		sprintf(int_to_string, "%d", i);
