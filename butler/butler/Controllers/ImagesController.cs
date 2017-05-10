@@ -56,9 +56,17 @@ namespace Butler.Controllers
         }
 
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
-            return "value";
+            // TODO: Change to detector
+            string artistImagePath = "/home/administrator/dev/neural/database/" + id + "/detector_output.png";
+
+            if(!System.IO.File.Exists(artistImagePath)) {
+                return StatusCode(404);
+            }
+            
+            var detectorImage = System.IO.File.OpenRead(artistImagePath);
+            return File(detectorImage, "image/png");
         }
 
         [HttpPost]
