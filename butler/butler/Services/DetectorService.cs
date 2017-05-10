@@ -38,7 +38,7 @@ namespace Butler.Services
         }
 
         ~DetectorService() {
-            Console.WriteLine("HERE");
+            this.detectorProcess.Kill();
         }
 
         public void AddToQueue(ImageTask imageTask)
