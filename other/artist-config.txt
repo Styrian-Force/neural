@@ -5,6 +5,11 @@ Link: https://github.com/cysmith/neural-style-tf
 Requirements:
 - CUDA 8.0
 - Cudnn 5.1
+	> cd folder/extracted/contents
+	> sudo cp -P include/cudnn.h /usr/include
+	> sudo cp -P lib64/libcudnn* /usr/lib/x86_64-linux-gnu/
+	> sudo chmod a+r /usr/lib/x86_64-linux-gnu/libcudnn*
+	> For Tensorflow to find everything, I had to copy include/cudnn.h and the libraries in lib64/ to /usr/local/cuda-8.0/include and /usr/local/cuda-8.0/lib64
 - Scipy
 	> pip3 install --upgrade scipy
 - OPENCV
@@ -12,6 +17,22 @@ Requirements:
 - TensorFlow
 	> CPU-only: pip3 install --upgrade tensorflow
 	> GPU: pip3 install --upgrade tensorflow-gpu
+
+For compilation of Tensorflow source files (to speed it up):
+- Bazel
+	> https://bazel.build/versions/master/docs/install-ubuntu.html
+- Configure installation
+	> https://www.tensorflow.org/install/install_sources#ConfigureInstallation
+	> Mostly use defaults (Capital letters)
+	> No OpenCV
+	> Python 3.5
+	> Yes Cuda, and set the folder to /usr/local/cuda-8.0
+	> Do not use clang, use gcc
+	> Do not use Google Image something and some file manager
+- Build
+	> bazel build --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --config=opt --config=cuda //tensorflow/tools/pip_package:build_pip_package
+	> bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
+	> sudo pip3 install /tmp/tensorflow_pkg/something.whl --upgrade
 
 Weights for Very Deep Convolutional Networks for Large-Scale Visual Recognition:
 - Download: http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat
@@ -21,4 +42,7 @@ Simple example:
 bash stylize_image.sh ./image_input/lion.jpg ./styles/kandinsky.jpg
 
 Advanced example:
-python3 neural_style.py --content_img lion.jpg --style_imgs kandinsky.jpg --max_size 1000 --max_iterations 100 --original_colors --device /cpu:0 --verbose
+- CPU
+	> python3 neural_style.py --content_img lion.jpg --style_imgs kandinsky.jpg --max_size 1000 --max_iterations 100 --original_colors --device /cpu:0 --verbose
+- GPU
+	> python3 neural_style.py --content_img taj_mahal.jpg --style_imgs starry-night.jpg --max_size 1000 --max_iterations 150 --device /gpu:0 --verbose
