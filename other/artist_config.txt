@@ -1,6 +1,6 @@
-Neural Style Tensorflow:
+fast-style-transfer:
 
-Link: https://github.com/cysmith/neural-style-tf
+Link: https://github.com/lengstrom/fast-style-transfer
 
 Requirements:
 - CUDA 8.0
@@ -38,12 +38,22 @@ Weights for Very Deep Convolutional Networks for Large-Scale Visual Recognition:
 - Download: http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat
 - Save in project root directory
 
-Simple example:
-bash stylize_image.sh ./image_input/lion.jpg ./styles/kandinsky.jpg
+Weights for 6 different styles:
+- Download: https://drive.google.com/drive/folders/0B9jhaT37ydSyRk9UX0wwX3BpMzQ
+- Save in style_models/
 
 ## style.py 
 
 `style.py` trains networks that can transfer styles from artwork into images.
+
+Example: 
+python3 style.py \
+  --style styles/red_flowers.jpg \
+  --checkpoint-dir style_models/ \
+  --test input/tubingen.jpg \
+  --test-dir learning/ \
+  --content-weight 1.5e1 \
+  --checkpoint-iterations 1000
 
 **Flags**
 - `--checkpoint-dir`: Directory to save checkpoint in. Required.

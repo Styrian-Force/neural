@@ -1,4 +1,10 @@
 
 *.ckpt
 src/__pycache__/
+__pycache__/
 style_models/
+styles/
+input/
+learning/
+*.mat
+data/
