@@ -35,7 +35,8 @@ namespace butler
             services.AddSingleton<IDetectorService, DetectorService>();
             services.AddSingleton<IArtistService, ArtistService>();
             services.AddSingleton<IImageService, ImageService>();
-            services.AddSingleton<IIdService, IdService>();            
+            services.AddSingleton<IIdService, IdService>();
+            services.AddSingleton<IFileService, FileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +54,8 @@ namespace butler
             });
         }
 
-        public void OnShutdown() {
+        public void OnShutdown()
+        {
             Console.WriteLine("SERVER_STOPPED");
             Program.detectorProcess.Kill();
         }

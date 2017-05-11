@@ -17,17 +17,21 @@ namespace Butler.Services
         private static readonly int PRINT_ITERATIONS = 1;
         private static readonly bool ORIGINAL_COLORS = false;
 
-        ILogger<ArtistService> _logger;
+        private ILogger<ArtistService> _logger;
+        private IFileService _fileService;
 
         private Queue<ImageTask> queue;
 
         public ArtistService(
-            ILogger<ArtistService> logger
+            ILogger<ArtistService> logger,
+            IFileService fileService
         )
         {
             Console.WriteLine("ALERT_SERVICE: Artist Service constructor");
 
             this._logger = logger;
+            this._fileService = fileService;
+
             this.queue = new Queue<ImageTask>();
 
             Thread artistThread = new Thread(HandleQueue);
@@ -56,7 +60,7 @@ namespace Butler.Services
 
             string arguments = "neural_style.py";
             arguments += " --content_img " + image.Id + ".png";
-            arguments += " --content_img_dir " + imageTask.DetectorDir;
+            arguments += " --content_img_dir " + this._fileService.GetDetectorDir(imageTask);
             arguments += " --style_imgs starry-night.jpg";
             arguments += " --style_imgs_dir ./styles";
             arguments += " --device " + DEVICE.Id;
@@ -66,7 +70,7 @@ namespace Butler.Services
                 arguments += " --original_colors";
             }            
             arguments += " --img_name " + image.Id;
-            arguments += " --img_output_dir " + imageTask.ArtistDir;
+            arguments += " --img_output_dir " + this._fileService.GetArtistDir(imageTask);
             arguments += " --verbose";
 
             info.Arguments = arguments;

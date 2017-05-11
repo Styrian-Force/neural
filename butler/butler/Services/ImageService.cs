@@ -4,26 +4,32 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using Butler.Interfaces;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+
 using ImageSharp;
 using ImageSharp.Formats;
 using ImageSharp.Processing;
+
 using Butler.Models;
-using Microsoft.AspNetCore.Http;
+using Butler.Interfaces;
+using Butler.Config;
 
 namespace Butler.Services
 {
     public class ImageService : IImageService
     {
-        ILogger<ImageService> _logger;
+        private ILogger<ImageService> _logger;
+        private IFileService _fileService;
 
         public ImageService(
-            ILogger<ImageService> logger
+            ILogger<ImageService> logger,
+            IFileService fileService
         )
         {
             Console.WriteLine("IMAGE_SERVICE: Image Service constructor");
             this._logger = logger;
+            this._fileService = fileService;
 
             Configuration.Default.AddImageFormat(new JpegFormat());
             Configuration.Default.AddImageFormat(new PngFormat());
@@ -33,9 +39,14 @@ namespace Butler.Services
 
         public void MergeImages(ImageTask imageTask)
         {
-            using (var original = File.OpenRead(imageTask.OriginalImagePath))
+            string originalImagePath = this._fileService.GetOriginalImagePath(imageTask);
+            string workingDir = this._fileService.GetWorkingDir(imageTask);
+            string artistDir = this._fileService.GetArtistDir(imageTask);
+            string mergedImagePath = this._fileService.GetMergedImagePath(imageTask);
+
+            using (var original = File.OpenRead(originalImagePath))
             {
-                using (var output = File.OpenWrite(imageTask.WorkingDir + "butler_artist.png"))
+                using (var output = File.OpenWrite(mergedImagePath))
                 {
                     var finalImage = ImageSharp.Image.Load(original);
 
@@ -43,7 +54,7 @@ namespace Butler.Services
                     {
                         foreach (Models.Image image in imageTask.CroppedImages)
                         {
-                            string croppedPath = imageTask.ArtistDir + image.Id + ".png";
+                            string croppedPath = artistDir + image.Id + ".png";
 
                             using (var cropped = File.OpenRead(croppedPath))
                             {
@@ -68,16 +79,19 @@ namespace Butler.Services
             }
         }
 
-        public bool FileTypeSupported(IFormFile file) {
+        public bool FileTypeSupported(IFormFile file)
+        {
             Stream stream = file.OpenReadStream();
-            try {
+            try
+            {
                 ImageSharp.Image.Load(stream);
             }
-            catch(NotSupportedException exception) {
+            catch (NotSupportedException exception)
+            {
                 _logger.LogDebug(exception.Message);
                 return false;
             }
-            return true;            
+            return true;
         }
     }
 

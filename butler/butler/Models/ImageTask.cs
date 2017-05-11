@@ -10,10 +10,7 @@ namespace Butler.Models
     {
         public string JobId { get; set; }
         public List<Image> CroppedImages { get; set; }
-        public string WorkingDir { get; set; }
-        public string DetectorDir { get; set; }
-        public string ArtistDir { get; set; }
-        public string OriginalImagePath { get; set; }
+        public string OriginalExtension { get; set; }
         public Task task { get; set; }
     }
 }

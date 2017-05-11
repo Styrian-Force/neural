@@ -14,16 +14,21 @@ namespace Butler.Services
     {
         public static Weights WEIGHTS = Weights.TINY_YOLO_VOC; 
 
-        ILogger<DetectorService> _logger;
+        private ILogger<DetectorService> _logger;
+        private IFileService _fileService;
 
         private Process detectorProcess;
         private Queue<ImageTask> queue;
 
         public DetectorService(
-            ILogger<DetectorService> logger
+            ILogger<DetectorService> logger,
+            IFileService fileSerice
         )
         {
             Console.WriteLine("DETECTOR_SERVICE: DetectorService konstruktor");
+            this._logger = logger;
+            this._fileService = fileSerice;
+            this.queue = new Queue<ImageTask>();
 
             // start detector process
             Process process = new Process();
@@ -31,10 +36,7 @@ namespace Butler.Services
             this.detectorProcess = process;
 
             Thread detectorThread = new Thread(StartDetector);
-            detectorThread.Start();
-
-            this._logger = logger;
-            this.queue = new Queue<ImageTask>();
+            detectorThread.Start();          
         }
 
         ~DetectorService() {
@@ -79,7 +81,13 @@ namespace Butler.Services
             while (true)
             {
                 string line = stdout.ReadLine();
-                if (line != null && line == "DETECTOR_READY")
+                if(line == null) {
+                    continue;
+                }
+
+                _logger.LogDebug("DETECTOR_OUTPUT: " + line);
+
+                if (line == "DETECTOR_READY")
                 {
                     Console.WriteLine("DETECTOR IS READY");
                     break;
@@ -109,9 +117,13 @@ namespace Butler.Services
                     StreamWriter inputWriter = this.detectorProcess.StandardInput;
                     StreamReader outputReader = this.detectorProcess.StandardOutput;
 
-                    inputWriter.WriteLine(imageTask.OriginalImagePath);
-                    inputWriter.WriteLine(imageTask.WorkingDir);
-                    inputWriter.WriteLine(imageTask.DetectorDir);
+                    string originalImagePath = this._fileService.GetOriginalImagePath(imageTask);
+                    string workingDir = this._fileService.GetWorkingDir(imageTask);
+                    string detectorDir = this._fileService.GetDetectorDir(imageTask);
+
+                    inputWriter.WriteLine(originalImagePath);
+                    inputWriter.WriteLine(workingDir);
+                    inputWriter.WriteLine(detectorDir);
                     inputWriter.Flush();
 
                     List<Image> croppedImages = new List<Image>();
@@ -133,7 +145,7 @@ namespace Butler.Services
                         }
                     }
                     imageTask.CroppedImages = croppedImages;
-                    _logger.LogDebug(imageTask.OriginalImagePath + " successfully created.");
+                    _logger.LogDebug(originalImagePath + " successfully created.");
                     Console.WriteLine("ID:" + imageTask.JobId);
                     imageTask.task.Start();
                 }
