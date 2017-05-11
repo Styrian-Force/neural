@@ -7,8 +7,6 @@ styles
 pngs
 preds
 
-style_models/
-
 *.sw*
 data
 __pycache__/
@@ -99,3 +97,5 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+style_models/
