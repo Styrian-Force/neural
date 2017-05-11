@@ -22,8 +22,9 @@ namespace Butler.Services
 
         public string GenerateId()
         {
-            Guid guid = Guid.NewGuid();
-            return guid.ToString();
+            //Guid guid = Guid.NewGuid();
+            //return guid.ToString();
+            return string.Format("{0:yyyy-MM-dd_HH-mm-ss.fff}", DateTime.Now);
         }
     }
 }

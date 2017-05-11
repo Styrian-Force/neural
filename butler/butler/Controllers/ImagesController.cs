@@ -56,13 +56,21 @@ namespace Butler.Controllers
         }
 
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
-            return "value";
+            // TODO: Change to detector
+            string artistImagePath = "/home/administrator/dev/neural/database/" + id + "/detector_output.png";
+
+            if(!System.IO.File.Exists(artistImagePath)) {
+                return StatusCode(404);
+            }
+            
+            var detectorImage = System.IO.File.OpenRead(artistImagePath);
+            return File(detectorImage, "image/png");
         }
 
         [HttpPost]
-        public StatusCodeResult Post()
+        public async Task<IActionResult> Post()
         {
             IFormFileCollection files = HttpContext.Request.Form.Files;
 
@@ -79,8 +87,8 @@ namespace Butler.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
-            string workingDir = UPLOAD_DIRECTORY;
-            workingDir += string.Format("{0:yyyy-MM-dd_HH-mm-ss.fff}/", DateTime.Now);
+            string jobId = this._idService.GenerateId();
+            string workingDir = UPLOAD_DIRECTORY + jobId + "/";
             string detectorDir = workingDir + "detector/";
             string artistDir = workingDir + "artist/";
 
@@ -88,14 +96,14 @@ namespace Butler.Controllers
             CreateDir(detectorDir);
             CreateDir(artistDir);
 
-            string originalImagePath = workingDir + "butler_output" + Path.GetExtension(file.FileName);
+            string originalImagePath = workingDir + "butler" + Path.GetExtension(file.FileName);
 
             using (var fileStream = new FileStream(originalImagePath, FileMode.Create))
             {
                 file.CopyTo(fileStream);
 
                 ImageTask imageTask = new ImageTask();
-                imageTask.JobId = this._idService.GenerateId();
+                imageTask.JobId = jobId;
                 imageTask.WorkingDir = workingDir;
                 imageTask.DetectorDir = detectorDir;
                 imageTask.ArtistDir = artistDir;
@@ -108,15 +116,17 @@ namespace Butler.Controllers
 
                 imageTask.task = new Task(() => { });
 
-                this._artistService.AddToQueue(imageTask);
+                /*this._artistService.AddToQueue(imageTask);
                 imageTask.task.Wait();
                 Console.WriteLine("ARTIST_END");
 
                 this._imageService.MergeImages(imageTask);
-                Console.WriteLine("IMAGE_SERVICE_END");
-            }
+                Console.WriteLine("IMAGE_SERVICE_END");*/
 
-            return StatusCode(200);
+                var detectorImage = System.IO.File.OpenRead(imageTask.WorkingDir + "detector_output.png");
+                return File(detectorImage, "image/png");
+            }       
+            //return StatusCode(200);
         }
 
         // PUT api/values/5

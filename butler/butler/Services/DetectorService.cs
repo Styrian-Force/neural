@@ -12,6 +12,8 @@ namespace Butler.Services
 {
     public class DetectorService : IDetectorService
     {
+        public static Weights WEIGHTS = Weights.TINY_YOLO_VOC; 
+
         ILogger<DetectorService> _logger;
 
         private Process detectorProcess;
@@ -29,10 +31,14 @@ namespace Butler.Services
             this.detectorProcess = process;
 
             Thread detectorThread = new Thread(StartDetector);
-            detectorThread.Start(process);
+            detectorThread.Start();
 
             this._logger = logger;
             this.queue = new Queue<ImageTask>();
+        }
+
+        ~DetectorService() {
+            this.detectorProcess.Kill();
         }
 
         public void AddToQueue(ImageTask imageTask)
@@ -54,17 +60,22 @@ namespace Butler.Services
             info.RedirectStandardError = true;
             info.WorkingDirectory = "/home/administrator/dev/git/neural/detector";
             info.FileName = info.WorkingDirectory + "/darknet";
-            info.Arguments = "detect cfg/tiny-yolo-voc.cfg weights/tiny-yolo-voc.weights";
+
+            string arguments = "detect";
+            arguments += " " + WEIGHTS.CfgPath;
+            arguments += " " + WEIGHTS.WeightsPath;
+
+            info.Arguments = arguments;
 
             return info;
         }
 
-        private void StartDetector(object data)
-        {
-            Process process = (Process)data;
-            process.Start();
+        private void StartDetector()
+        {            
+            this.detectorProcess.Start();
 
-            StreamReader stdout = process.StandardOutput;
+            StreamReader stdout = this.detectorProcess.StandardOutput;
+
             while (true)
             {
                 string line = stdout.ReadLine();
@@ -78,8 +89,6 @@ namespace Butler.Services
             Console.WriteLine("DoWork thread finished! DetectorReady!");
             this.HandleQueue();
         }
-
-        private int counter = 0;
 
         private void HandleQueue()
         {
@@ -109,7 +118,10 @@ namespace Butler.Services
                     while (true)
                     {
                         string message = outputReader.ReadLine();
-                        Debug.WriteLine("DETECTOR_OUTPUT " + (counter++) + ": " + message);
+                        if(message == null) {
+                            continue;
+                        }
+                        Debug.WriteLine("DETECTOR_OUTPUT: " + message);
                         if (message == "FINISHED_SUCCESSFULLY")
                         {                            
                             break;
