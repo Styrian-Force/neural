@@ -61,10 +61,11 @@ namespace Butler.Controllers
             // TODO: Change to detector
             string artistImagePath = "/home/administrator/dev/neural/database/" + id + "/detector_output.png";
 
-            if(!System.IO.File.Exists(artistImagePath)) {
+            if (!System.IO.File.Exists(artistImagePath))
+            {
                 return StatusCode(404);
             }
-            
+
             var detectorImage = System.IO.File.OpenRead(artistImagePath);
             return File(detectorImage, "image/png");
         }
@@ -83,7 +84,12 @@ namespace Butler.Controllers
             }
             else if (file.Length <= 0)
             {
-                _logger.LogError("File length is zero.");
+                _logger.LogError("No files in request.");
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+            else if (!this._imageService.FileTypeSupported(file))
+            {
+                _logger.LogError("File type is not supported.");
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
@@ -125,7 +131,7 @@ namespace Butler.Controllers
 
                 var detectorImage = System.IO.File.OpenRead(imageTask.WorkingDir + "detector_output.png");
                 return File(detectorImage, "image/png");
-            }       
+            }
             //return StatusCode(200);
         }
 
@@ -148,5 +154,6 @@ namespace Butler.Controllers
                 Directory.CreateDirectory(path);
             }
         }
+
     }
 }

@@ -10,6 +10,7 @@ using ImageSharp;
 using ImageSharp.Formats;
 using ImageSharp.Processing;
 using Butler.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace Butler.Services
 {
@@ -26,6 +27,8 @@ namespace Butler.Services
 
             Configuration.Default.AddImageFormat(new JpegFormat());
             Configuration.Default.AddImageFormat(new PngFormat());
+            Configuration.Default.AddImageFormat(new GifFormat());
+            Configuration.Default.AddImageFormat(new BmpFormat());
         }
 
         public void MergeImages(ImageTask imageTask)
@@ -63,6 +66,18 @@ namespace Butler.Services
                     finalImage.SaveAsPng(output);
                 }
             }
+        }
+
+        public bool FileTypeSupported(IFormFile file) {
+            Stream stream = file.OpenReadStream();
+            try {
+                ImageSharp.Image.Load(stream);
+            }
+            catch(NotSupportedException exception) {
+                _logger.LogDebug(exception.Message);
+                return false;
+            }
+            return true;            
         }
     }
 
