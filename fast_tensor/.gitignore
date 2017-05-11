@@ -7,6 +7,8 @@ styles
 pngs
 preds
 
+style_models/
+
 *.sw*
 data
 __pycache__/
