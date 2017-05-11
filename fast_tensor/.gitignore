@@ -1,0 +1,4 @@
+
+*.ckpt
+src/__pycache__/
+style_models/
