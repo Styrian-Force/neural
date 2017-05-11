@@ -13,10 +13,11 @@ namespace Butler.Services
 {
     public class ArtistService : IArtistService
     {
-        private static readonly Device DEVICE = Device.CPU;
+        private static readonly Device DEVICE = Device.GPU;
         private static readonly int MAX_ITERATIONS = 2;
         private static readonly int PRINT_ITERATIONS = 1;
         private static readonly bool ORIGINAL_COLORS = false;
+        private static readonly string style_model = "wave.ckpt";
 
         private ILogger<ArtistService> _logger;
         private IFileService _fileService;
@@ -59,22 +60,17 @@ namespace Butler.Services
             info.WorkingDirectory = ButlerConfig.NEURAL_GIT_DIR + "/artist";
             info.FileName = "/usr/bin/python3";                                                                                                                     
 
-            string arguments = "neural_style.py";
-            arguments += " --content_img " + image.Id + ".png";
-            arguments += " --content_img_dir " + this._fileService.GetDetectorDir(imageTask);
-            arguments += " --style_imgs starry-night.jpg";
-            arguments += " --style_imgs_dir ./styles";
+            string arguments = "evaluate.py";
+            arguments += " --allow-different-dimensions";
             arguments += " --device " + DEVICE.Id;
-            arguments += " --max_iterations " + MAX_ITERATIONS;
+            arguments += " --checkpoint style_models/" + style_model;
+            arguments += " --in-path " + this._fileService.GetDetectorDir(imageTask);
+            
             arguments += " --print_iterations " + PRINT_ITERATIONS;
-            if(ORIGINAL_COLORS) {
-                arguments += " --original_colors";
-            }            
-            arguments += " --img_name " + image.Id;
-            arguments += " --img_output_dir " + this._fileService.GetArtistDir(imageTask);
-            arguments += " --verbose";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 
-            info.Arguments = arguments;
+            arguments += " --out-path " + this._fileService.GetArtistDir(imageTask);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+
+            info.Arguments = "evaluate.py --allow-different-dimensions --device /gpu:0 --checkpoint ./style_models/wave.ckpt --in-path input/ --out-path output/";
 
             return info;                                                                                                                                                                                                                                                                                
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     }   

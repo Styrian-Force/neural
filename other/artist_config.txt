@@ -76,7 +76,7 @@ python3 style.py \
 `evaluate.py` evaluates trained networks given a checkpoint directory. If evaluating images from a directory, every image in the directory must have the same dimensions.
 
 Example GPU: 
-python3 evaluate.py --allow-different-dimensions --device /gpu:0 --checkpoint style_models/wave.ckpt --in-path examples/content/ --out-path output/
+python3 evaluate.py --allow-different-dimensions --device /gpu:0 --checkpoint style_models/wave.ckpt --in-path input/ --out-path output/
 
 **Flags**
 - `--checkpoint`: Directory or `ckpt` file to load checkpoint from. Required.
