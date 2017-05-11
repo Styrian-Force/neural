@@ -62,7 +62,7 @@ namespace Butler.Controllers
             ImageTask imageTask = new ImageTask();
             imageTask.JobId = id;
             // TODO: Change to artist
-            string detectorImagePath = this._fileService.GetDetectorImagePath(imageTask);
+            string detectorImagePath = this._fileService.GetDetectorImagePathWithExt(imageTask);
 
             if (!System.IO.File.Exists(detectorImagePath))
             {
@@ -128,7 +128,7 @@ namespace Butler.Controllers
                 this._imageService.MergeImages(imageTask);
                 Console.WriteLine("IMAGE_SERVICE_END");
 
-                string detectorImagePath = this._fileService.GetDetectorImagePath(imageTask);
+                string detectorImagePath = this._fileService.GetDetectorImagePathWithExt(imageTask);
                 var detectorImage = System.IO.File.OpenRead(detectorImagePath);
                 return File(detectorImage, "image/png");
             }

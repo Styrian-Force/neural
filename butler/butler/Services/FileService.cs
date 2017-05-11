@@ -67,6 +67,13 @@ namespace Butler.Services
             return detectorImagePath;
         }
 
+        public string GetDetectorImagePathWithExt(ImageTask imageTask)
+        {
+            string workingDir = GetWorkingDir(imageTask);
+            string detectorImagePath = workingDir + ButlerConfig.DETECTOR_OUTPUT_WITH_EXT;
+            return detectorImagePath;
+        }
+
         public string GetMergedImagePath(ImageTask imageTask)
         {
             string workingDir = GetWorkingDir(imageTask);

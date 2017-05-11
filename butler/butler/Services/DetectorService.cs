@@ -119,11 +119,11 @@ namespace Butler.Services
                     StreamReader outputReader = this.detectorProcess.StandardOutput;
 
                     string originalImagePath = this._fileService.GetOriginalImagePath(imageTask);
-                    string workingDir = this._fileService.GetWorkingDir(imageTask);
+                    string detectorImagePath = this._fileService.GetDetectorImagePath(imageTask);
                     string detectorDir = this._fileService.GetDetectorDir(imageTask);
 
                     inputWriter.WriteLine(originalImagePath);
-                    inputWriter.WriteLine(workingDir);
+                    inputWriter.WriteLine(detectorImagePath);
                     inputWriter.WriteLine(detectorDir);
                     inputWriter.Flush();
 

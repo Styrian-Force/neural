@@ -609,9 +609,8 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 	close(stdout_copy);
 	
 	char input[FILE_PATH_LENGTH];
-	char working_dir[FILE_PATH_LENGTH];
-	char sub_dir[FILE_PATH_LENGTH];
-	char output[FILE_PATH_LENGTH];
+	char detector_output[FILE_PATH_LENGTH];
+	char detector_dir[FILE_PATH_LENGTH];
 	
 	int i;
 
@@ -620,8 +619,8 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
             strncpy(input, filename, 256);
         } else {
             fgets(input, FILE_PATH_LENGTH, stdin);
-            fgets(working_dir, FILE_PATH_LENGTH, stdin);
-            fgets(sub_dir, FILE_PATH_LENGTH, stdin);
+            fgets(detector_output, FILE_PATH_LENGTH, stdin);
+            fgets(detector_dir, FILE_PATH_LENGTH, stdin);
 
 		    /* remove newline, if present */
 		    i = strlen(input) - 1;
@@ -631,18 +630,16 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 	        if(!input)
             	return;
 		    
-		    i = strlen(working_dir) - 1;
-		    if (working_dir[i] == '\n')
-		        working_dir[i] = '\0';
+		    i = strlen(detector_output) - 1;
+		    if (detector_output[i] == '\n')
+		        detector_output[i] = '\0';
 		        
-		    i = strlen(sub_dir) - 1;
-		    if (sub_dir[i] == '\n')
-		        sub_dir[i] = '\0';
-
-			strcpy(output, working_dir);
-			strcat(output, "detector_output");			
+		    i = strlen(detector_dir) - 1;
+		    if (detector_dir[i] == '\n')
+		        detector_dir[i] = '\0';		
 					    
-		    printf("%s\n", sub_dir);
+		    printf("%s\n", detector_dir);
+            printf("%s\n", detector_output);
 		    fflush(stdout);        
         }
         image im = load_image_color(input,0,0);
@@ -666,9 +663,9 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
 	        do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
         }
         //else if (nms) do_nms_sort(boxes, probs, l.w*l.h*l.n, l.classes, nms);
-        save_cropped_images(im, l.w*l.h*l.n, thresh, boxes, probs, names, l.classes, sub_dir);
+        save_cropped_images(im, l.w*l.h*l.n, thresh, boxes, probs, names, l.classes, detector_dir);
         draw_detections(im, l.w*l.h*l.n, thresh, boxes, probs, names, alphabet, l.classes);
-	    save_image(im, output);
+	    save_image(im, detector_output);
         
         printf("FINISHED_SUCCESSFULLY\n");
         fflush(stdout);

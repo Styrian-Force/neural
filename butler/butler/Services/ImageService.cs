@@ -61,11 +61,17 @@ namespace Butler.Services
                                 var croppedImage = ImageSharp.Image.Load(cropped);
                                 using (PixelAccessor<Rgba32> croppedPixels = croppedImage.Lock())
                                 {
-                                    for (int i = 0; i < image.Width; i++)
+                                    for (int i = 0; i < croppedPixels.Width; i++)
                                     {
-                                        for (int j = 0; j < image.Heigth; j++)
+                                        for (int j = 0; j < croppedPixels.Height; j++)
                                         {
-                                            pixels[i + image.Left, j + image.Top] = croppedPixels[i, j];
+                                            int pixelI = i + image.Left;
+                                            int pixelJ = j + image.Top;
+
+                                            if(pixelI < 0 || pixelI >= pixels.Width || pixelJ < 0 || pixelJ >= pixels.Height ) {
+                                                continue;
+                                            }
+                                            pixels[pixelI, pixelJ] = croppedPixels[i, j];
                                         }
                                     }
                                 }

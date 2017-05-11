@@ -223,7 +223,7 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
     }
 }
 
-void save_cropped_images(image im, int num, float thresh, box *boxes, float **probs, char **names, int classes, char* sub_dir) {
+void save_cropped_images(image im, int num, float thresh, box *boxes, float **probs, char **names, int classes, char* detector_dir) {
 	int i;	
   	char output_cropped[FILE_PATH_LENGTH];
 
@@ -254,7 +254,7 @@ void save_cropped_images(image im, int num, float thresh, box *boxes, float **pr
 		
 		char int_to_string[15];
 		sprintf(int_to_string, "%d", i);
-		strcpy(output_cropped, sub_dir);
+		strcpy(output_cropped, detector_dir);
 		strcat(output_cropped, int_to_string);        
 		save_image(cropped_image, output_cropped);
   	}
