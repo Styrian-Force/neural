@@ -1,0 +1,98 @@
+fast-style-transfer:
+
+Link: https://github.com/lengstrom/fast-style-transfer
+
+Requirements:
+- CUDA 8.0
+- Cudnn 5.1
+	> cd folder/extracted/contents
+	> sudo cp -P include/cudnn.h /usr/include
+	> sudo cp -P lib64/libcudnn* /usr/lib/x86_64-linux-gnu/
+	> sudo chmod a+r /usr/lib/x86_64-linux-gnu/libcudnn*
+	> For Tensorflow to find everything, I had to copy include/cudnn.h and the libraries in lib64/ to /usr/local/cuda-8.0/include and /usr/local/cuda-8.0/lib64
+- Scipy
+	> pip3 install --upgrade scipy
+- OPENCV
+	> pip3 install --upgrade opencv-python
+- TensorFlow
+	> CPU-only: pip3 install --upgrade tensorflow
+	> GPU: pip3 install --upgrade tensorflow-gpu
+
+For compilation of Tensorflow source files (to speed it up):
+- Bazel
+	> https://bazel.build/versions/master/docs/install-ubuntu.html
+- Configure installation
+	> https://www.tensorflow.org/install/install_sources#ConfigureInstallation
+	> Mostly use defaults (Capital letters)
+	> No OpenCV
+	> Python 3.5
+	> Yes Cuda, and set the folder to /usr/local/cuda-8.0
+	> Do not use clang, use gcc
+	> Do not use Google Image something and some file manager
+- Build
+	> bazel build --cxxopt="-D_GLIBCXX_USE_CXX11_ABI=0" --config=opt --config=cuda //tensorflow/tools/pip_package:build_pip_package
+	> bazel-bin/tensorflow/tools/pip_package/build_pip_package /tmp/tensorflow_pkg
+	> sudo pip3 install /tmp/tensorflow_pkg/something.whl --upgrade
+
+Weights for Very Deep Convolutional Networks for Large-Scale Visual Recognition:
+- Download: http://www.vlfeat.org/matconvnet/models/imagenet-vgg-verydeep-19.mat
+- Save in project root directory
+
+Weights for 6 different styles:
+- Download: https://drive.google.com/drive/folders/0B9jhaT37ydSyRk9UX0wwX3BpMzQ
+- Save in style_models/
+
+## style.py 
+
+`style.py` trains networks that can transfer styles from artwork into images.
+
+Example: 
+python3 style.py \
+  --style styles/red_flowers.jpg \
+  --checkpoint-dir style_models/ \
+  --test input/tubingen.jpg \
+  --test-dir learning/ \
+  --content-weight 1.5e1 \
+  --checkpoint-iterations 1000
+
+**Flags**
+- `--checkpoint-dir`: Directory to save checkpoint in. Required.
+- `--style`: Path to style image. Required.
+- `--train-path`: Path to training images folder. Default: `data/train2014`.
+- `--test`: Path to content image to test network on at at every checkpoint iteration. Default: no image.
+- `--test-dir`: Path to directory to save test images in. Required if `--test` is passed a value.
+- `--epochs`: Epochs to train for. Default: `2`.
+- `--batch_size`: Batch size for training. Default: `4`.
+- `--checkpoint-iterations`: Number of iterations to go for between checkpoints. Default: `2000`.
+- `--vgg-path`: Path to VGG19 network (default). Can pass VGG16 if you want to try out other loss functions. Default: `data/imagenet-vgg-verydeep-19.mat`.
+- `--content-weight`: Weight of content in loss function. Default: `7.5e0`.
+- `--style-weight`: Weight of style in loss function. Default: `1e2`.
+- `--tv-weight`: Weight of total variation term in loss function. Default: `2e2`.
+- `--learning-rate`: Learning rate for optimizer. Default: `1e-3`.
+- `--slow`: For debugging loss function. Direct optimization on pixels using Gatys' approach. Uses `test` image as content value, `test_dir` for saving fully optimized images.
+
+
+## evaluate.py
+`evaluate.py` evaluates trained networks given a checkpoint directory. If evaluating images from a directory, every image in the directory must have the same dimensions.
+
+Example GPU: 
+python3 evaluate.py --allow-different-dimensions --device /gpu:0 --checkpoint style_models/wave.ckpt --in-path examples/content/ --out-path output/
+
+**Flags**
+- `--checkpoint`: Directory or `ckpt` file to load checkpoint from. Required.
+- `--in-path`: Path of image or directory of images to transform. Required.
+- `--out-path`: Out path of transformed image or out directory to put transformed images from in directory (if `in_path` is a directory). Required.
+- `--device`: Device used to transform image. Default: `/cpu:0`.
+- `--batch-size`: Batch size used to evaluate images. In particular meant for directory transformations. Default: `4`.
+- `--allow-different-dimensions`: Allow different image dimensions. Default: not enabled
+
+## transform_video.py
+`transform_video.py` transforms videos into stylized videos given a style transfer net.
+
+**Flags**
+- `--checkpoint-dir`: Directory or `ckpt` file to load checkpoint from. Required.
+- `--in-path`: Path to video to transfer style to. Required.
+- `--out-path`: Path to out video. Required.
+- `--tmp-dir`: Directory to put temporary processing files in. Will generate a dir if you do not pass it a path. Will delete tmpdir afterwards. Default: randomly generates invisible dir, then deletes it after execution completion.
+- `--device`: Device to evaluate frames with. Default: `/gpu:0`.
+- `--batch-size`: Batch size for evaluating images. Default: `4`.
