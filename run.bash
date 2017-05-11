@@ -7,7 +7,7 @@ case $1 in
 		dotnet clean
 		dotnet publish
 		sudo cp -r /home/administrator/dev/git/neural/butler/butler/bin/Debug/netcoreapp1.1/publish/* /var/aspnetcore/butler/
-		sudo systemctl restart kestrel-hellomvc.service
+		sudo systemctl restart butler-asp.net-core.service
         ;;    
     *)
         cat << EOF

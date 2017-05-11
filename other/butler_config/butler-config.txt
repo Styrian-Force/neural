@@ -18,16 +18,16 @@ sudo systemctl stop nginx
 sudo systemctl restart nginx
 
 # service
-systemctl enable kestrel-hellomvc.service
-systemctl start kestrel-hellomvc.service
-systemctl status kestrel-hellomvc.service
+systemctl enable butler-asp.net-core.service
+systemctl start butler-asp.net-core.service
+systemctl status butler-asp.net-core.service
 
 ## service restart
-systemctl restart kestrel-hellomvc.service
+systemctl restart butler-asp.net-core.service
 systemctl daemon-reload
 
 # logs
-sudo journalctl -fu kestrel-hellomvc.service
+sudo journalctl -fu butler-asp.net-core.service
 
 # unzip
 sudo unzip /media/administrator/MY_IP/aspnetcore.zip -d /var/
@@ -42,7 +42,7 @@ cd ~/dev/git/neural/butler
 dotnet clean
 dotnet publish
 sudo cp -r /home/administrator/dev/git/neural/butler/butler/bin/Debug/netcoreapp1.1/publish/* /var/aspnetcore/butler/
-sudo systemctl restart kestrel-hellomvc.service
+sudo systemctl restart butler-asp.net-core.service
 
 
 ######################################################

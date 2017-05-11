@@ -15,3 +15,13 @@ sudo apt-get install cuda
 2. Configure CUDA path
 Section 6.1:
     -http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#mandatory-post
+
+######################################################
+#### PREPARE DARKNET
+
+Weights:
+- https://pjreddie.com/darknet/yolo/
+- put them in weights/ directory
+
+Labels:
+- python3 data/labels/make_labels.py
