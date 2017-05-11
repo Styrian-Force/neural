@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Butler.Config;
 using Butler.Interfaces;
 using Butler.Models;
 using Microsoft.Extensions.Logging;
@@ -55,8 +56,8 @@ namespace Butler.Services
             info.RedirectStandardOutput = true;
             info.RedirectStandardInput = true;
             info.RedirectStandardError = true;
-            info.WorkingDirectory = "/home/administrator/dev/git/neural-style-tf";
-            info.FileName = "/usr/bin/python3";
+            info.WorkingDirectory = ButlerConfig.NEURAL_GIT_DIR + "/artist";
+            info.FileName = "/usr/bin/python3";                                                                                                                     
 
             string arguments = "neural_style.py";
             arguments += " --content_img " + image.Id + ".png";
@@ -71,13 +72,13 @@ namespace Butler.Services
             }            
             arguments += " --img_name " + image.Id;
             arguments += " --img_output_dir " + this._fileService.GetArtistDir(imageTask);
-            arguments += " --verbose";
+            arguments += " --verbose";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 
             info.Arguments = arguments;
 
-            return info;
-        }
-
+            return info;                                                                                                                                                                                                                                                                                
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }   
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
         private void HandleQueue()
         {
             while (true)

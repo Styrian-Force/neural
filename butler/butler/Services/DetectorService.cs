@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Butler.Config;
 using Butler.Interfaces;
 using Butler.Models;
 using Microsoft.Extensions.Logging;
@@ -60,7 +61,7 @@ namespace Butler.Services
             info.RedirectStandardOutput = true;
             info.RedirectStandardInput = true;
             info.RedirectStandardError = true;
-            info.WorkingDirectory = "/home/administrator/dev/git/neural/detector";
+            info.WorkingDirectory = ButlerConfig.NEURAL_GIT_DIR + "detector";
             info.FileName = info.WorkingDirectory + "/darknet";
 
             string arguments = "detect";
