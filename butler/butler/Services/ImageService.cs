@@ -70,7 +70,7 @@ namespace Butler.Services
             string originalImagePath = this._fileService.GetOriginalImagePath(imageTask);
             string workingDir = this._fileService.GetWorkingDir(imageTask);
             string artistDir = this._fileService.GetArtistDir(imageTask);
-            string mergedImagePath = this._fileService.GetMergedImagePath(imageTask);
+            string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
 
             using (var original = File.OpenRead(originalImagePath))
             {
