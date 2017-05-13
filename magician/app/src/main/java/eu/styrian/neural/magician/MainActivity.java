@@ -9,11 +9,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.styrian.neural.magician.api.adapters.AnswersAdapter;
 import eu.styrian.neural.magician.api.adapters.ValueAdapter;
@@ -37,6 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.button)
     Button buttonSend;*/
+
+    @BindView(R.id.imageDisplay)
+    ImageView imageView;
+
 
     private ValueAdapter valueAdapter;
     private RecyclerView mRecyclerView;
@@ -80,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                         // display the image data in a ImageView or save it
                         Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
                         //ivCaptcha.setImageBitmap(bm);
+                        imageView.setImageBitmap(bitmap);
                         Log.d("TAG", "WIDTH: " + bitmap.getWidth());
                     } else {
                         Log.d("TAG", "WIDTH: " + "fail1");
