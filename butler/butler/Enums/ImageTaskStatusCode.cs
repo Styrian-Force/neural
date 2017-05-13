@@ -5,7 +5,7 @@ namespace Butler.Models
     {
         ImageUploaded,
         ImageInDetectorQueue,
-        ImageTaskStatusCode
+        ImageInDetector
     }
 }
 
