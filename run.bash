@@ -8,6 +8,7 @@ case $1 in
 		dotnet publish
 		sudo cp -r /home/administrator/dev/git/neural/butler/butler/bin/Debug/netcoreapp1.1/publish/* /var/aspnetcore/butler/
 		sudo systemctl restart butler-asp.net-core.service
+        sudo journalctl -fu butler-asp.net-core.service
         ;;    
     *)
         cat << EOF
