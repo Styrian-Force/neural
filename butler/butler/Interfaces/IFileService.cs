@@ -17,6 +17,7 @@ namespace Butler.Interfaces
         string GetDetectorImagePathWithExt(ImageTask imageTask);
         string GetMergedImagePath(ImageTask imageTask);
         string GetTransparentImagePath(ImageTask imageTask);
+        string GetTransparentImagePathWithExt(ImageTask imageTask);
         void CreateDir(string path);
     }
 }
