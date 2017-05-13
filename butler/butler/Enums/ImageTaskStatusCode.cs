@@ -5,7 +5,10 @@ namespace Butler.Models
     {
         ImageUploaded,
         ImageInDetectorQueue,
-        ImageInDetector
+        ImageInDetector,
+        ImageInArtistQueue,
+        ImageInArtist,
+        ImageFinished
     }
 }
 

@@ -82,10 +82,26 @@ namespace Butler.Services
                 taskStatusLogPath,
                 () =>
                 {
-                    string json = status.ToJson();
-                    File.AppendAllText(taskStatusLogPath, json);
+                    List<ImageTaskStatus> statuses = ReadLogWithoutLock(imageTask);
+                    if (statuses == null)
+                    {
+                        statuses = new List<ImageTaskStatus>();
+                    }
+                    statuses.Add(status);
+                    //string json = status.ToJson();
+                    string logs = ImageTaskStatus.ToJson(statuses);
+                    File.WriteAllText(taskStatusLogPath, logs);
                 }
             );
+        }
+
+        private List<ImageTaskStatus> ReadLogWithoutLock(ImageTask imageTask)
+        {
+            string taskStatusLogPath = _fileService.GetTaskStatusLogPath(imageTask);
+            string logs = File.ReadAllText(taskStatusLogPath);
+
+            List<ImageTaskStatus> imageTasks = ImageTaskStatus.FromJson(logs);
+            return imageTasks;
         }
 
         public List<ImageTaskStatus> ReadLog(ImageTask imageTask)
@@ -97,14 +113,12 @@ namespace Butler.Services
                 taskStatusLogPath,
                 () =>
                 {
-                    string logs = File.ReadAllText(taskStatusLogPath);
-
-                    List<ImageTaskStatus> imageTasks = ImageTaskStatus.FromJson(logs);
-
-                    unreadTasks = (List<ImageTaskStatus>)imageTasks.Where(x => x.StatusRead == false);
+                    List<ImageTaskStatus> imageTasks = ReadLogWithoutLock(imageTask);
+                    if (imageTasks == null) return;
+                    unreadTasks = imageTasks.Where(x => x.StatusRead == false).ToList();
                     unreadTasks.ForEach(x => x.StatusRead = true);
 
-                    logs = ImageTaskStatus.ToJson(imageTasks);
+                    string logs = ImageTaskStatus.ToJson(imageTasks);
                     File.WriteAllText(taskStatusLogPath, logs);
                 }
             );

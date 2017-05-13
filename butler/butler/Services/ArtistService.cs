@@ -21,18 +21,21 @@ namespace Butler.Services
 
         private ILogger<ArtistService> _logger;
         private IFileService _fileService;
+        private readonly IImageTaskStatusService _imageTaskStatusService;
 
         private Queue<ImageTask> queue;
 
         public ArtistService(
             ILogger<ArtistService> logger,
-            IFileService fileService
+            IFileService fileService,
+            IImageTaskStatusService taskStatusService
         )
         {
             Console.WriteLine("ALERT_SERVICE: Artist Service constructor");
 
             this._logger = logger;
             this._fileService = fileService;
+            this._imageTaskStatusService = taskStatusService;
 
             this.queue = new Queue<ImageTask>();
 
@@ -44,12 +47,21 @@ namespace Butler.Services
         {
             lock (queue)
             {
+                this._imageTaskStatusService.AddToLog(
+                    imageTask,
+                    ImageTaskStatus.ImageInArtistQueue()
+                );
                 queue.Enqueue(imageTask);
             }
         }
 
         private ProcessStartInfo GetArtistProcessInfo(ImageTask imageTask)
         {
+            this._imageTaskStatusService.AddToLog(
+                imageTask,
+                ImageTaskStatus.ImageInArtist()
+            );
+
             ProcessStartInfo info = new ProcessStartInfo();
 
             info.CreateNoWindow = false;

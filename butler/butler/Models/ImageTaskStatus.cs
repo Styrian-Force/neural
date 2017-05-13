@@ -33,11 +33,22 @@ namespace Butler.Models
                 "Image is in Detector. "
             );
         }
-
-        public static ImageTaskStatus DetectorFoundSomethingf(string message) {
+        public static ImageTaskStatus ImageInArtistQueue() {
             return new ImageTaskStatus(
-                ImageTaskStatusCode.ImageUploaded, 
-                "Detector found: "+ message
+                ImageTaskStatusCode.ImageInArtistQueue, 
+                "Image is in Artist queue. "
+            );
+        }
+        public static ImageTaskStatus ImageInArtist() {
+            return new ImageTaskStatus(
+                ImageTaskStatusCode.ImageInArtist, 
+                "The Artist is performing the finishing touches. "
+            );
+        }
+        public static ImageTaskStatus ImageFinished() {
+            return new ImageTaskStatus(
+                ImageTaskStatusCode.ImageFinished, 
+                "Work on the image is finished! "
             );
         }
 

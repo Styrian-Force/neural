@@ -106,11 +106,6 @@ namespace Butler.Controllers
             imageTask.JobId = this._idService.GenerateId();
             imageTask.OriginalExtension = Path.GetExtension(file.FileName);
 
-            this._imageTaskStatusService.AddToLog(
-                imageTask,
-                ImageTaskStatus.ImageUploaded()
-            );
-
             string workingDir = this._fileService.GetWorkingDir(imageTask);
             string detectorDir = this._fileService.GetDetectorDir(imageTask);
             string artistDir = this._fileService.GetArtistDir(imageTask);
@@ -118,6 +113,11 @@ namespace Butler.Controllers
             this._fileService.CreateDir(workingDir);
             this._fileService.CreateDir(detectorDir);
             this._fileService.CreateDir(artistDir);
+
+            this._imageTaskStatusService.AddToLog(
+                imageTask,
+                ImageTaskStatus.ImageUploaded()
+            );
 
             string originalImagePath = this._fileService.GetOriginalImagePath(imageTask);
 
@@ -133,6 +133,8 @@ namespace Butler.Controllers
                 imageTask.task.Wait();
                 Console.WriteLine("DETECTOR_END");
 
+                List<ImageTaskStatus> statuses = _imageTaskStatusService.ReadLog(imageTask);
+
                 /*imageTask.task = new Task(() => { });
 
                 this._artistService.AddToQueue(imageTask);
@@ -146,8 +148,14 @@ namespace Butler.Controllers
                 string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
                 var mergedImage = System.IO.File.OpenRead(mergedImagePath);
                 return File(mergedImage, "image/png");*/
+                this._imageTaskStatusService.AddToLog(
+                    imageTask,
+                    ImageTaskStatus.ImageFinished()
+                );
+
                 string mergedImagePath = this._fileService.GetDetectorImagePathWithExt(imageTask);
                 var mergedImage = System.IO.File.OpenRead(mergedImagePath);
+                statuses = _imageTaskStatusService.ReadLog(imageTask);
                 return File(mergedImage, "image/png");
             }
             //return StatusCode(200);

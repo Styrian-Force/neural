@@ -126,7 +126,7 @@ namespace Butler.Services
                 {
                     this._imageTaskStatusService.AddToLog(
                         imageTask,
-                        ImageTaskStatus.ImageInDetectorQueue()
+                        ImageTaskStatus.ImageInDetector()
                     );
 
                     StreamWriter inputWriter = this.detectorProcess.StandardInput;
@@ -164,6 +164,7 @@ namespace Butler.Services
                     imageTask.CroppedImages = croppedImages;
                     _logger.LogDebug(originalImagePath + " successfully created.");
                     Console.WriteLine("ID:" + imageTask.JobId);
+
                     imageTask.task.Start();
                 }
             }
