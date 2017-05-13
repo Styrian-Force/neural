@@ -19,6 +19,7 @@ import java.util.List;
 
 import eu.styrian.neural.magician.api.interfaces.ImageService;
 import eu.styrian.neural.magician.api.models.ImageViewUrl;
+import eu.styrian.neural.magician.api.request.ImageRequestFactory;
 import eu.styrian.neural.magician.api.utils.ApiUtils;
 import eu.styrian.neural.magician.api.utils.RequestBodyUtil;
 import okhttp3.MediaType;
@@ -36,9 +37,11 @@ import retrofit2.Response;
 public class DownloadImageTask extends AsyncTask<ImageViewUrl, Void, Bitmap> {
 
     public ImageService imageService;
+    public ImageRequestFactory factory;
 
     public DownloadImageTask() {
         imageService = ApiUtils.getImageService();
+        factory = ImageRequestFactory.getInstance();
     }
 
     ImageView imageView;
@@ -46,7 +49,7 @@ public class DownloadImageTask extends AsyncTask<ImageViewUrl, Void, Bitmap> {
     @Override
     protected Bitmap doInBackground(ImageViewUrl... imageViewUrls) {
         int count = imageViewUrls.length;
-        if(count < 1) {
+        if (count < 1) {
             return null;
         }
 
@@ -58,19 +61,16 @@ public class DownloadImageTask extends AsyncTask<ImageViewUrl, Void, Bitmap> {
         // File file = FileUtils.getFile(this, fileUri);
         File file = new File("/mnt/sdcard/person.jpg");
 
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part imageFileBody = MultipartBody.Part.createFormData("uploaded_file",file.getName(), requestFile);
+        MultipartBody.Part imageFileBody = factory.generatePostRequest(file);
 
         Call<ResponseBody> call = imageService.post(imageFileBody);
 
-
         call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call,
-                                   Response<ResponseBody> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
                 Log.i("", "neki - success" + response.code());
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     Log.i("", "neki - success" + response.body().contentLength());
                     Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
                     imageView.setImageBitmap(bitmap);
