@@ -17,7 +17,7 @@ public class ValueAdapter extends RecyclerView.Adapter<ValueAdapter.ViewHolder> 
     private Context mContext;
     private PostItemListener mItemListener;
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView titleTv;
         PostItemListener mItemListener;
