@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="eu.styrian.neural.magician">
+
+    <uses-permission android:name="android.permission.INTERNET"/>1
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <service
+                    android:name="eu.styrian.neural.magician.api.interfaces.ImageService"
+                    >
+                </service>
+            </intent-filter>
+        </activity>
+
+    </application>
+
+
+</manifest>
