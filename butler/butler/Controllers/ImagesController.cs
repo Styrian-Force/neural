@@ -119,18 +119,18 @@ namespace Butler.Controllers
                 imageTask.task.Wait();
                 Console.WriteLine("DETECTOR_END");
 
-                /*imageTask.task = new Task(() => { });
+                imageTask.task = new Task(() => { });
 
                 this._artistService.AddToQueue(imageTask);
                 imageTask.task.Wait();
                 Console.WriteLine("ARTIST_END");
 
                 this._imageService.MergeImages(imageTask);
-                Console.WriteLine("IMAGE_SERVICE_END");*/
+                Console.WriteLine("IMAGE_SERVICE_END");
 
-                string detectorImagePath = this._fileService.GetDetectorImagePathWithExt(imageTask);
-                var detectorImage = System.IO.File.OpenRead(detectorImagePath);
-                return File(detectorImage, "image/png");
+                string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
+                var mergedImage = System.IO.File.OpenRead(mergedImagePath);
+                return File(mergedImage, "image/png");
             }
             //return StatusCode(200);
         }

@@ -81,6 +81,13 @@ namespace Butler.Services
             return mergedImagePath;
         }
 
+        public string GetMergedImagePathWithExt(ImageTask imageTask)
+        {
+            string workingDir = GetWorkingDir(imageTask);
+            string mergedImagePath = workingDir + ButlerConfig.MERGED_OUTPUT_WITH_EXT;
+            return mergedImagePath;
+        }
+
        public string GetTransparentImagePath(ImageTask imageTask) {
            string workingDir = GetWorkingDir(imageTask);
             string transparentImagePath = workingDir + ButlerConfig.TRANSPARENT_OUTPUT;
@@ -93,7 +100,6 @@ namespace Butler.Services
             string transparentImagePath = workingDir + ButlerConfig.TRANSPARENT_OUTPUT_WITH_EXT;
             return transparentImagePath;
         }
-        
     }
 
 }

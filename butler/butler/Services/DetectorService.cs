@@ -13,7 +13,7 @@ namespace Butler.Services
 {
     public class DetectorService : IDetectorService
     {
-        public static Weights WEIGHTS = Weights.TINY_YOLO_VOC; 
+        public static Weights WEIGHTS = Weights.YOLO; 
 
         private ILogger<DetectorService> _logger;
         private IFileService _fileService;
