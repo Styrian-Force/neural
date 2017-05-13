@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Butler.Models;
 
 namespace Butler.Controllers
 {
@@ -11,16 +12,20 @@ namespace Butler.Controllers
     {
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Value> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new Value[] {
+                new Value("1_slika"),
+                new Value("2_nekaj"),
+                new Value("3_lepega")
+            };
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public Value Get(int id)
         {
-            return "value";
+            return new Value("4_resno, id: "+id);
         }
 
         // POST api/values

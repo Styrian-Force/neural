@@ -37,6 +37,7 @@ namespace butler
             services.AddSingleton<IImageService, ImageService>();
             services.AddSingleton<IIdService, IdService>();
             services.AddSingleton<IFileService, FileService>();
+            services.AddSingleton<IImageTaskStatusService, ImageTaskStatusService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

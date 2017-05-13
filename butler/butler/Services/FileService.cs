@@ -100,6 +100,13 @@ namespace Butler.Services
             string transparentImagePath = workingDir + ButlerConfig.TRANSPARENT_OUTPUT_WITH_EXT;
             return transparentImagePath;
         }
+
+        public string GetTaskStatusLogPath(ImageTask imageTask)
+        {
+            string workingDir = GetWorkingDir(imageTask);
+            string taskStatusLogPath = workingDir + ButlerConfig.TASK_STATUS_LOG;
+            return taskStatusLogPath;
+        }
     }
 
 }

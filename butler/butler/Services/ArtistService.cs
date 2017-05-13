@@ -93,7 +93,8 @@ namespace Butler.Services
                 {
                     Process artistProcess = new Process();
                     artistProcess.StartInfo = GetArtistProcessInfo(imageTask);
-                    artistProcess.Start();
+                    bool wasStarted = artistProcess.Start();
+                    _logger.LogInformation("Artist process was started: " + wasStarted);
 
                     StreamReader outputReader = artistProcess.StandardOutput;
 
