@@ -10,6 +10,7 @@ namespace Butler.Config
 
         public static string ORIGINAL_FILENAME = "input";
         public static string DETECTOR_OUTPUT = "detector_output";
+        public static string TRANSPARENT_OUTPUT = "transparent_output";
         public static string DETECTOR_OUTPUT_WITH_EXT = DETECTOR_OUTPUT + ".png";
         public static string MERGED_OUTPUT = "merged_output.png";
     }

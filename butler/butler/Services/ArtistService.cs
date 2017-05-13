@@ -48,7 +48,7 @@ namespace Butler.Services
             }
         }
 
-        private ProcessStartInfo GetArtistProcessInfo(ImageTask imageTask, Image image)
+        private ProcessStartInfo GetArtistProcessInfo(ImageTask imageTask)
         {
             ProcessStartInfo info = new ProcessStartInfo();
 
@@ -57,24 +57,24 @@ namespace Butler.Services
             info.RedirectStandardOutput = true;
             info.RedirectStandardInput = true;
             info.RedirectStandardError = true;
-            info.WorkingDirectory = ButlerConfig.NEURAL_GIT_DIR + "/artist";
-            info.FileName = "/usr/bin/python3";                                                                                                                     
+            info.WorkingDirectory = ButlerConfig.NEURAL_GIT_DIR + "artist";
+            info.FileName = "/usr/bin/python3";
 
             string arguments = "evaluate.py";
             arguments += " --allow-different-dimensions";
             arguments += " --device " + DEVICE.Id;
             arguments += " --checkpoint style_models/" + style_model;
             arguments += " --in-path " + this._fileService.GetDetectorDir(imageTask);
-            
-            arguments += " --print_iterations " + PRINT_ITERATIONS;
 
-            arguments += " --out-path " + this._fileService.GetArtistDir(imageTask);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+            //arguments += " --print_iterations " + PRINT_ITERATIONS;
 
-            info.Arguments = "evaluate.py --allow-different-dimensions --device /gpu:0 --checkpoint ./style_models/wave.ckpt --in-path input/ --out-path output/";
+            arguments += " --out-path " + this._fileService.GetArtistDir(imageTask);
 
-            return info;                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }   
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+            info.Arguments = arguments;
+
+            return info;
+        }
+
         private void HandleQueue()
         {
             while (true)
@@ -91,26 +91,23 @@ namespace Butler.Services
 
                 if (imageTask != null)
                 {
-                    foreach (Image image in imageTask.CroppedImages)
+                    Process artistProcess = new Process();
+                    artistProcess.StartInfo = GetArtistProcessInfo(imageTask);
+                    artistProcess.Start();
+
+                    StreamReader outputReader = artistProcess.StandardOutput;
+
+                    while (true)
                     {
-                        Process artistProcess = new Process();
-                        artistProcess.StartInfo = GetArtistProcessInfo(imageTask, image);
-                        artistProcess.Start();
-
-                        StreamReader outputReader = artistProcess.StandardOutput;
-
-                        while (true)
+                        string message = outputReader.ReadLine();
+                        if (message != null)
                         {
-                            string message = outputReader.ReadLine();
-                            if (message != null)
-                            {
-                                Debug.WriteLine("ARTIST_OUTPUT: " + message);
-                            }
+                            Debug.WriteLine("ARTIST_OUTPUT: " + message);
+                        }
 
-                            if (message == "FINISHED_SUCCESSFULLY")
-                            {
-                                break;
-                            }
+                        if (message == "FINISHED_SUCCESSFULLY")
+                        {
+                            break;
                         }
                     }
 

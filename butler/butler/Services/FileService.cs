@@ -80,6 +80,13 @@ namespace Butler.Services
             string mergedImagePath = workingDir + ButlerConfig.MERGED_OUTPUT;
             return mergedImagePath;
         }
+
+       public string GetTransparentImagePath(ImageTask imageTask) {
+           string workingDir = GetWorkingDir(imageTask);
+            string transparentImagePath = workingDir + ButlerConfig.TRANSPARENT_OUTPUT;
+            return transparentImagePath;
+       }
+        
     }
 
 }

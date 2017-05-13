@@ -48,10 +48,10 @@ Weights for 6 different styles:
 
 Example: 
 python3 style.py \
+  --checkpoint-dir style_models/new/ \
   --style styles/red_flowers.jpg \
-  --checkpoint-dir style_models/ \
-  --test input/tubingen.jpg \
-  --test-dir learning/ \
+  --train-path /media/matej/92AC9E16AC9DF4C7/Torrents/coco2014/train2014 \
+  --vgg-path data/imagenet-vgg-verydeep-19.mat \
   --content-weight 1.5e1 \
   --checkpoint-iterations 1000
 
@@ -76,7 +76,13 @@ python3 style.py \
 `evaluate.py` evaluates trained networks given a checkpoint directory. If evaluating images from a directory, every image in the directory must have the same dimensions.
 
 Example GPU: 
-python3 evaluate.py --allow-different-dimensions --device /gpu:0 --checkpoint style_models/wave.ckpt --in-path input/ --out-path output/
+python3 evaluate.py \
+  --allow-different-dimensions \
+  --device /gpu:0 \
+  --checkpoint style_models/wave.ckpt \
+  --in-path input/ \
+  --out-path output/ \
+  --batch-size 1
 
 **Flags**
 - `--checkpoint`: Directory or `ckpt` file to load checkpoint from. Required.

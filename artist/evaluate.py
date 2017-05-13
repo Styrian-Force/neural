@@ -196,7 +196,9 @@ def ffwd_different_dimensions(in_path, out_path, checkpoint_dir,
         in_path_of_shape[shape].append(in_image)
         out_path_of_shape[shape].append(out_image)
     for shape in in_path_of_shape:
-        print('Processing images of shape %s' % shape)
+        print('Processing images of shape %s' % shape, flush=True)
+        sys.stdout.close()
+        sys.stdout = open("/dev/stdout", "w")
         ffwd(in_path_of_shape[shape], out_path_of_shape[shape], 
             checkpoint_dir, device_t, batch_size)
 
@@ -261,6 +263,9 @@ def main():
         else :
             ffwd(full_in, full_out, opts.checkpoint_dir, device_t=opts.device,
                     batch_size=opts.batch_size)
+
+    print('FINISHED_SUCCESSFULLY', flush=True)
+    sys.stdout.close()
 
 if __name__ == '__main__':
     main()

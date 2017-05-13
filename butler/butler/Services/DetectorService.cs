@@ -121,10 +121,12 @@ namespace Butler.Services
                     string originalImagePath = this._fileService.GetOriginalImagePath(imageTask);
                     string detectorImagePath = this._fileService.GetDetectorImagePath(imageTask);
                     string detectorDir = this._fileService.GetDetectorDir(imageTask);
+                    string transparentImagePath =  this._fileService.GetTransparentImagePath(imageTask);
 
                     inputWriter.WriteLine(originalImagePath);
                     inputWriter.WriteLine(detectorImagePath);
                     inputWriter.WriteLine(detectorDir);
+                    inputWriter.WriteLine(transparentImagePath);
                     inputWriter.Flush();
 
                     List<Image> croppedImages = new List<Image>();
