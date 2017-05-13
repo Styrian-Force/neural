@@ -37,6 +37,34 @@ namespace Butler.Services
             Configuration.Default.AddImageFormat(new BmpFormat());
         }
 
+        private void MergeTransparent(Image<Rgba32> finalImage, ImageTask imageTask)
+        {
+
+            string transparentImagePath = this._fileService.GetTransparentImagePathWithExt(imageTask);
+
+            using (PixelAccessor<Rgba32> pixels = finalImage.Lock())
+            {
+                using (FileStream transparent = File.OpenRead(transparentImagePath))
+                {
+                    Image<Rgba32> transparentImage = ImageSharp.Image.Load(transparent);
+                    using (PixelAccessor<Rgba32> transparentPixels = transparentImage.Lock())
+                    {
+                        for (int i = 0; i < transparentPixels.Width; i++)
+                        {
+                            for (int j = 0; j < transparentPixels.Height; j++)
+                            {
+                                if (transparentPixels[i, j].R == 0 && transparentPixels[i, j].B == 0 && transparentPixels[i, j].G == 0)
+                                {
+                                    continue;
+                                }
+                                pixels[i, j] = transparentPixels[i, j];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         public void MergeImages(ImageTask imageTask)
         {
             string originalImagePath = this._fileService.GetOriginalImagePath(imageTask);
@@ -68,7 +96,8 @@ namespace Butler.Services
                                             int pixelI = i + image.Left;
                                             int pixelJ = j + image.Top;
 
-                                            if(pixelI < 0 || pixelI >= pixels.Width || pixelJ < 0 || pixelJ >= pixels.Height ) {
+                                            if (pixelI < 0 || pixelI >= pixels.Width || pixelJ < 0 || pixelJ >= pixels.Height)
+                                            {
                                                 continue;
                                             }
                                             pixels[pixelI, pixelJ] = croppedPixels[i, j];
@@ -78,6 +107,8 @@ namespace Butler.Services
                             }
                         }
                     }
+
+                    MergeTransparent(finalImage, imageTask);
 
                     //image.Quality = quality;
                     finalImage.SaveAsPng(output);
