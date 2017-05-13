@@ -2,6 +2,8 @@ package eu.styrian.neural.magician;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -11,8 +13,14 @@ import android.view.View;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +30,12 @@ import eu.styrian.neural.magician.api.adapters.AnswersAdapter;
 import eu.styrian.neural.magician.api.adapters.ValueAdapter;
 import eu.styrian.neural.magician.api.interfaces.ImageService;
 import eu.styrian.neural.magician.api.interfaces.ValueService;
+import eu.styrian.neural.magician.api.models.ImageViewUrl;
 import eu.styrian.neural.magician.api.models.Item;
 import eu.styrian.neural.magician.api.models.SOAnswersResponse;
 import eu.styrian.neural.magician.api.models.Value;
 import eu.styrian.neural.magician.api.utils.ApiUtils;
+import eu.styrian.neural.magician.tasks.DownloadImageTask;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -61,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_answers);
         valueAdapter = new ValueAdapter(this, new ArrayList<Value>(0), new ValueAdapter.PostItemListener() {
-
             @Override
             public void onPostClick(long id) {
                 Toast.makeText(MainActivity.this, "Post id is" + id, Toast.LENGTH_SHORT).show();
@@ -75,11 +84,17 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         mRecyclerView.addItemDecoration(itemDecoration);
 
-        loadAnswers();
+        //loadAnswers();
+
+        String imageUrl = "http://www.eagles.org/wp-content/uploads/2015/10/donate-box-eagle.jpg";
+        ImageViewUrl imageViewUrl = new ImageViewUrl();
+        imageViewUrl.setImageView(imageView);
+        imageViewUrl.setUrl(imageUrl);
+        new DownloadImageTask().execute(imageViewUrl);
 
         Call<ResponseBody> call = imageService.getById("2017-05-13_16-56-16.439");
 
-        call.enqueue(new Callback<ResponseBody>() {
+        /*call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
@@ -101,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 // TODO
             }
-        });
+        });*/
     }
 
     public void loadAnswers() {
@@ -139,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         //EditText editText = (EditText) findViewById(R.id.editText);
         //String message = editText.getText().toString();
     }
+
 
 
 }
