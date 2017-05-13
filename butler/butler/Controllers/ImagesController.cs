@@ -130,11 +130,6 @@ namespace Butler.Controllers
 
                 this._detectorService.AddToQueue(imageTask);
 
-                this._imageTaskStatusService.AddToLog(
-                    imageTask,
-                    ImageTaskStatus.ImageUploaded()
-                );
-
                 imageTask.task.Wait();
                 Console.WriteLine("DETECTOR_END");
 

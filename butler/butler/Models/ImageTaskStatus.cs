@@ -21,6 +21,18 @@ namespace Butler.Models
                 "Image successfully uploaded. "
             );
         }
+        public static ImageTaskStatus ImageInDetectorQueue() {
+            return new ImageTaskStatus(
+                ImageTaskStatusCode.ImageInDetectorQueue, 
+                "Image is in Detector queue. "
+            );
+        }
+        public static ImageTaskStatus ImageInDetector() {
+            return new ImageTaskStatus(
+                ImageTaskStatusCode.ImageInDetector, 
+                "Image is in Detector. "
+            );
+        }
 
         public static ImageTaskStatus DetectorFoundSomethingf(string message) {
             return new ImageTaskStatus(

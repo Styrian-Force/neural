@@ -17,18 +17,22 @@ namespace Butler.Services
 
         private ILogger<DetectorService> _logger;
         private IFileService _fileService;
+        private readonly IImageTaskStatusService _imageTaskStatusService;
 
         private Process detectorProcess;
         private Queue<ImageTask> queue;
 
         public DetectorService(
             ILogger<DetectorService> logger,
-            IFileService fileSerice
+            IFileService fileSerice,
+            IImageTaskStatusService taskStatusService
         )
         {
             Console.WriteLine("DETECTOR_SERVICE: DetectorService konstruktor");
             this._logger = logger;
             this._fileService = fileSerice;
+            this._imageTaskStatusService = taskStatusService;
+
             this.queue = new Queue<ImageTask>();
 
             // start detector process
@@ -41,6 +45,7 @@ namespace Butler.Services
         }
 
         ~DetectorService() {
+            _logger.LogInformation("Detector is dying ");
             this.detectorProcess.Kill();
         }
 
@@ -49,6 +54,10 @@ namespace Butler.Services
             lock (queue)
             {
                 queue.Enqueue(imageTask);
+                this._imageTaskStatusService.AddToLog(
+                    imageTask,
+                    ImageTaskStatus.ImageInDetectorQueue()
+                );
             }
         }
 
@@ -115,6 +124,11 @@ namespace Butler.Services
 
                 if (imageTask != null)
                 {
+                    this._imageTaskStatusService.AddToLog(
+                        imageTask,
+                        ImageTaskStatus.ImageInDetectorQueue()
+                    );
+
                     StreamWriter inputWriter = this.detectorProcess.StandardInput;
                     StreamReader outputReader = this.detectorProcess.StandardOutput;
 
