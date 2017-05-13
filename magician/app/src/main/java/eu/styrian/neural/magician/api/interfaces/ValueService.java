@@ -1,5 +1,7 @@
 package eu.styrian.neural.magician.api.interfaces;
 
+import java.util.List;
+
 import eu.styrian.neural.magician.api.models.Value;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -11,6 +13,9 @@ import retrofit2.http.GET;
 public interface ValueService {
 
     @GET("/api/values/1")
-    Call<Value> getAnswers();
+    Call<Value> getById();
+
+    @GET("/api/values")
+    Call<List<Value>> get();
 
 }

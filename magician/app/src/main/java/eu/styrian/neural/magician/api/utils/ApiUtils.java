@@ -2,7 +2,6 @@ package eu.styrian.neural.magician.api.utils;
 
 import eu.styrian.neural.magician.api.interfaces.SOService;
 import eu.styrian.neural.magician.api.interfaces.ValueService;
-import eu.styrian.neural.magician.api.models.Value;
 import eu.styrian.neural.magician.api.rest.RetrofitClient;
 
 public class ApiUtils {

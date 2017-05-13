@@ -64,14 +64,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadAnswers() {
-        valueService.getAnswers().enqueue(new Callback<Value>() {
+        valueService.get().enqueue(new Callback<List<Value>>() {
             @Override
-            public void onResponse(Call<Value> call, Response<Value> response) {
+            public void onResponse(Call<List<Value>> call, Response<List<Value>> response) {
 
                 if(response.isSuccessful()) {
-                    List<Value> values = new ArrayList<>();
-                    values.add(response.body());
-                    valueAdapter.updateAnswers(values);
+                    valueAdapter.updateAnswers(response.body());
                     Log.d("MainActivity", "posts loaded from API");
                 }else {
                     int statusCode  = response.code();
@@ -81,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Value> call, Throwable t) {
+            public void onFailure(Call<List<Value>> call, Throwable t) {
                 Log.d("MainActivity", "error loading from API");
 
             }
