@@ -7,6 +7,44 @@ This README would normally document whatever steps are necessary to get your app
 #### Članek na Overleaf ####
 * [Povezava na urejanje članka](https://www.overleaf.com/8783020xmvxrqdxrjjx)
 
+### Changes ###
+
+#### neural v0.2 Changes ####
+- hitrejša detekcija z preddefiniranim stilom:
+	- https://github.com/lengstrom/fast-style-transfer
+	- https://github.com/jcjohnson/fast-neural-style
+	- https://github.com/yusuketomoto/chainer-fast-neuralstyle
+
+#### neural v0.1 Changes ####
+- BUTLER: 
+	- asp.net core strežnik
+	- konfiguracija ASP.NET CORE strežnika
+	- ImageController - implementacija POST poizvedbe z sliko na strežnik
+	- priprava NGINX daemona za publish
+	- BASH: oddajanje skripte za avtomatski publish
+
+- DETECTOR:
+   - implementacija komunikacije z BUTLERjem preko STDIN/STDOUT
+   - prilagoditev C kode
+	
+- BUTLER/DETECTOR:
+	- komunikacija med procesoma
+	- pošiljanje slike detectorju
+	- implementacija vrste (queue)
+	- čakanje na zaključek obdelave v detectorju
+	- vračanje detektirane slike uporabniku, kot odgovor na POST poizvedbo
+	- implementacija GetById
+ 
+- ARTIST:
+    - priprava service-a na BUTLER strežniku
+	- prilagoditev python kode
+	
+- BUTLER/DETECTOR:
+	- komunikacija med procesoma
+	
+PROBLEMI:
+	- počasnost CNN
+
 ### What is this repository for? ###
 
 * Quick summary
