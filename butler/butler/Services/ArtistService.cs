@@ -17,7 +17,7 @@ namespace Butler.Services
         private static readonly int MAX_ITERATIONS = 2;
         private static readonly int PRINT_ITERATIONS = 1;
         private static readonly bool ORIGINAL_COLORS = false;
-        private static readonly string style_model = "wave.ckpt";
+        private static readonly string STYLE_MODEL = "udnie.ckpt";
 
         private ILogger<ArtistService> _logger;
         private IFileService _fileService;
@@ -75,7 +75,7 @@ namespace Butler.Services
             string arguments = "evaluate.py";
             arguments += " --allow-different-dimensions";
             arguments += " --device " + DEVICE.Id;
-            arguments += " --checkpoint style_models/" + style_model;
+            arguments += " --checkpoint style_models/" + STYLE_MODEL;
             arguments += " --in-path " + this._fileService.GetDetectorDir(imageTask);
 
             //arguments += " --print_iterations " + PRINT_ITERATIONS;

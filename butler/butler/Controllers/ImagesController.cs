@@ -135,7 +135,7 @@ namespace Butler.Controllers
 
                 List<ImageTaskStatus> statuses = _imageTaskStatusService.ReadLog(imageTask);
 
-                /*imageTask.task = new Task(() => { });
+                imageTask.task = new Task(() => { });
 
                 this._artistService.AddToQueue(imageTask);
                 imageTask.task.Wait();
@@ -147,8 +147,8 @@ namespace Butler.Controllers
 
                 string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
                 var mergedImage = System.IO.File.OpenRead(mergedImagePath);
-                return File(mergedImage, "image/png");*/
-                this._imageTaskStatusService.AddToLog(
+                return File(mergedImage, "image/png");
+                /*this._imageTaskStatusService.AddToLog(
                     imageTask,
                     ImageTaskStatus.ImageFinished()
                 );
@@ -156,7 +156,7 @@ namespace Butler.Controllers
                 string mergedImagePath = this._fileService.GetDetectorImagePathWithExt(imageTask);
                 var mergedImage = System.IO.File.OpenRead(mergedImagePath);
                 statuses = _imageTaskStatusService.ReadLog(imageTask);
-                return File(mergedImage, "image/png");
+                return File(mergedImage, "image/png");*/
             }
             //return StatusCode(200);
         }
