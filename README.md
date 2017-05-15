@@ -5,7 +5,8 @@ This README would normally document whatever steps are necessary to get your app
 ### Teoretično ozadje ###
 
 #### Članek na Overleaf ####
-* [Povezava na urejanje članka](https://www.overleaf.com/8783020xmvxrqdxrjjx)
+* [Povezava na urejanje članka - Seminar 1](https://www.overleaf.com/8783020xmvxrqdxrjjx)
+* [Povezava na urejanje članka - Seminar 2](https://www.overleaf.com/9568204fvzkzkfykwbz)
 
 ### Changes ###
 
