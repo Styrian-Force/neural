@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -26,7 +27,7 @@ dependencies {
     })
     // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.7.0'
-    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.jakewharton:butterknife:8.5.1'
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
@@ -34,4 +35,6 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'com.github.google:cameraview:9bbe07ba44'
+    compile "com.android.support:design:$supportLibraryVersion"
 }
