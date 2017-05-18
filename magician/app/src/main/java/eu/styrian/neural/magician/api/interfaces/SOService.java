@@ -1,7 +1,5 @@
 package eu.styrian.neural.magician.api.interfaces;
 
-import java.util.List;
-
 import eu.styrian.neural.magician.api.models.SOAnswersResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
