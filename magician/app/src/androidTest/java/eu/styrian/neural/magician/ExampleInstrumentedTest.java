@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("eu.styrian.neural.magician.magician", appContext.getPackageName());
+        assertEquals("eu.styrian.neural.magician", appContext.getPackageName());
     }
 }

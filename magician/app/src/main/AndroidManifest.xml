@@ -12,16 +12,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="eu.styrian.neural.magician.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
 
-                <service android:name=".api.interfaces.ImageService"></service>
+                <service android:name=".api.interfaces.ImageService" />
             </intent-filter>
         </activity>
-        <activity android:name=".GalleryActivity"></activity>
+        <activity android:name="eu.styrian.neural.magician.activity.GalleryActivity"></activity>
+        <activity android:name="eu.styrian.neural.magician.activity.CameraActivity"></activity>
     </application>
 
 </manifest>
