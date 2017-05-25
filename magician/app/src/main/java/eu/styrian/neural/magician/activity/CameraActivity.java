@@ -237,15 +237,21 @@ public class CameraActivity extends AppCompatActivity implements
             getBackgroundHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                            "picture.jpg");
+                    File outputDir = getApplicationContext().getCacheDir(); // context being the Activity pointer
+                    File outputFile = null;
+                    try {
+                        outputFile = File.createTempFile("picture", "jpg", outputDir);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+//                    File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg");
                     OutputStream os = null;
                     try {
-                        os = new FileOutputStream(file);
+                        os = new FileOutputStream(outputFile);
                         os.write(data);
                         os.close();
                     } catch (IOException e) {
-                        Log.w(TAG, "Cannot write to " + file, e);
+                        Log.w(TAG, "Cannot write to " + outputFile, e);
                     } finally {
                         if (os != null) {
                             try {

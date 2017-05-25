@@ -25,8 +25,8 @@ This README would normally document whatever steps are necessary to get your app
 	- BASH: oddajanje skripte za avtomatski publish
 
 - DETECTOR:
-   - implementacija komunikacije z BUTLERjem preko STDIN/STDOUT
-   - prilagoditev C kode
+	- implementacija komunikacije z BUTLERjem preko STDIN/STDOUT
+	- prilagoditev C kode
 	
 - BUTLER/DETECTOR:
 	- komunikacija med procesoma
