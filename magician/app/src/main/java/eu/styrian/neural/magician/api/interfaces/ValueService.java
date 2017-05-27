@@ -3,9 +3,9 @@ package eu.styrian.neural.magician.api.interfaces;
 import java.util.List;
 
 import eu.styrian.neural.magician.api.models.Value;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import rx.Observable;
 
 /**
  * Created by Gal on 13. 05. 2017.
@@ -13,10 +13,9 @@ import retrofit2.http.Path;
 
 public interface ValueService {
 
-    @GET("/api/values/{id}")
-    Call<Value> getById(@Path("id") int id);
+    @GET("api/values/{id}")
+    Observable<Value> getById(@Path("id") int id);
 
-    @GET("/api/values")
-    Call<List<Value>> get();
-
+    @GET("api/values")
+    Observable<List<Value>> getAll();
 }

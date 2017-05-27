@@ -7,10 +7,20 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import eu.styrian.neural.magician.R;
+import eu.styrian.neural.magician.api.models.Post;
+import eu.styrian.neural.magician.api.models.Value;
+import eu.styrian.neural.magician.api.utils.ApiServiceFactory;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,8 +46,67 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.button_camera)
     public void clickToCamera() {
         Log.d("TAG", "GOTO CAMERA");
-        Intent i = new Intent(getApplicationContext(), CameraActivity.class);
-        startActivity(i);
+        //Intent i = new Intent(getApplicationContext(), CameraActivity.class);
+        //startActivity(i);
+
+        /*Observable<List<Post>> posts = ApiServiceFactory.getPostService().getAll();
+
+        posts.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Post>>() {
+                    @Override
+                    public final void onCompleted() {
+                    }
+
+                    @Override
+                    public final void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public final void onNext(List<Post> values) {
+                        Log.d("success", values.size() + " asd");
+                    }
+                });*/
+
+        Observable<List<Value>> posts = ApiServiceFactory.getValueService().getAll();
+
+        posts.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Value>>() {
+                    @Override
+                    public final void onCompleted() {
+                    }
+
+                    @Override
+                    public final void onError(Throwable e) {
+                        Log.d("error", e.getMessage());
+                    }
+
+                    @Override
+                    public final void onNext(List<Value> values) {
+                        Log.d("success", values.size() + " asd");
+                    }
+                });
+
+        Observable<Value> onValue = ApiServiceFactory.getValueService().getById(1);
+
+        onValue.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Value>() {
+                    @Override
+                    public final void onCompleted() {
+                    }
+
+                    @Override
+                    public final void onError(Throwable e) {
+                        Log.d("error", e.getMessage());
+                    }
+
+                    @Override
+                    public final void onNext(Value value) {
+                        Log.d("success", value.getCode() + " asd");
+                    }
+                });
     }
 
 }

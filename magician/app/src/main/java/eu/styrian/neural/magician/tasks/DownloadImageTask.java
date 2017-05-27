@@ -51,7 +51,7 @@ public class DownloadImageTask extends AsyncTask<ImageViewUrl, Void, Bitmap> {
 
         MultipartBody.Part imageFileBody = factory.generatePostRequest(file);
 
-        Call<ResponseBody> call = imageService.post(imageFileBody);
+        /*Call<ResponseBody> call = imageService.post(imageFileBody);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -69,7 +69,7 @@ public class DownloadImageTask extends AsyncTask<ImageViewUrl, Void, Bitmap> {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("", " - fail" + t.getMessage());
             }
-        });
+        });*/
 
 
         //Log.i("TAG", "eagle: " + bitmap.getWidth());
