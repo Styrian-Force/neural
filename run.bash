@@ -2,7 +2,7 @@
 
 function publish {
 	sudo systemctl restart nginx
-        cd butler
+		cd butler
 	dotnet clean
 	dotnet publish
 	butlerServiceDir="/var/aspnetcore/butler/"
@@ -15,20 +15,33 @@ function publish {
 
 case $1 in
 	"p"|"publish")
-    	publish
-        ;;
+		publish
+		;;
 	"l"|"logs")
-        sudo journalctl -fu butler.service
-        ;; 
+		sudo journalctl -fu butler.service
+		;; 
 	"pl"|"publish-logs")
-    	publish
-        sudo journalctl -fu butler.service
-        ;; 
+		publish
+		sudo journalctl -fu butler.service
+		;; 
+	"rs"|"restart")
+		sudo systemctl restart butler.service
+		;; 
+	"rsl"|"restart-logs")
+		sudo systemctl restart butler.service
+		sudo journalctl -fu butler.service
+		;; 
+	"k"|"kill")
+		sudo systemctl stop butler.service
+		;; 
     *)
         cat << EOF
 p|publish
 l|logs
 pl|publish-logs
+r|restart
+rsl|restart-logs
+k|kill
 EOF
         ;;
 esac
