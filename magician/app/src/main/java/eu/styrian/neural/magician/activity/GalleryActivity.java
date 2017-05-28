@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -34,6 +36,7 @@ import eu.styrian.neural.magician.api.models.ImageTaskStatus;
 import eu.styrian.neural.magician.api.models.Value;
 import eu.styrian.neural.magician.api.request.ImageRequestFactory;
 import eu.styrian.neural.magician.api.utils.ApiServiceFactory;
+import eu.styrian.neural.magician.util.ImageProcessingUtil;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -147,17 +150,6 @@ public class GalleryActivity extends AppCompatActivity {
         }
     }
 
-    public String getPath1(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        int columnIndex = cursor.getColumnIndex(projection[0]);
-        String filePath = cursor.getString(columnIndex);
-        cursor.close();
-        return cursor.getString(column_index);
-    }
-
     @OnClick(R.id.button_load)
     public void loadImage(View view) {
         Log.d("asd", "BUTTON LOAD!");
@@ -187,10 +179,18 @@ public class GalleryActivity extends AppCompatActivity {
             return;
         }
 
+        Bitmap bitmap = getBitmap(file);
+        Bitmap resized = ImageProcessingUtil.resizeBitmap(bitmap, 500, 500);
+
+        if(resized == null) {
+            resetControls();
+
+        }
+
         MultipartBody.Part imageFileBody = ImageRequestFactory.getInstance().generatePostRequest(file);
 
         Observable<ImageTask> onImage = _imageService.post(imageFileBody);
-        Log.i("", "neki - ");
+
         onImage.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ImageTask>() {
@@ -301,5 +301,18 @@ public class GalleryActivity extends AppCompatActivity {
     private void resetControls() {
         this._dialog.dismiss();
         this.buttonSend.setEnabled(true);
+    }
+
+    private Bitmap getBitmap(File file) {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        Bitmap bitmap = BitmapFactory.decodeStream(fis);
+        return bitmap;
     }
 }
