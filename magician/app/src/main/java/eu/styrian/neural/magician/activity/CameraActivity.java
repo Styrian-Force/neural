@@ -40,6 +40,7 @@ import java.util.Set;
 
 import eu.styrian.neural.magician.R;
 import eu.styrian.neural.magician.activity.fragment.AspectRatioFragment;
+import eu.styrian.neural.magician.util.FileUtil;
 
 public class CameraActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback,
@@ -240,14 +241,7 @@ public class CameraActivity extends AppCompatActivity implements
             getBackgroundHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    File outputDir = getApplicationContext().getCacheDir(); // context being the Activity pointer
-                    File outputFile = null;
-                    try {
-                        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-                        outputFile = File.createTempFile("picture" + timeStamp, "jpg", outputDir);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    File outputFile = FileUtil.createTemporaryFile("camera_image", "jpg", getApplicationContext());
 //                    File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg");
                     OutputStream os = null;
                     try {
