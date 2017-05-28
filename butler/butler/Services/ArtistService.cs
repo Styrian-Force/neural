@@ -129,7 +129,6 @@ namespace Butler.Services
                     }
 
                     _logger.LogDebug("ID:" + imageTask.JobId);
-                    //imageTask.Task.Start();
                     this._imageService.AddToQueue(imageTask);
                 }
             }
