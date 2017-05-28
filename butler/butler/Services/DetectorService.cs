@@ -170,8 +170,6 @@ namespace Butler.Services
                     _logger.LogDebug(originalImagePath + " successfully created.");
                     _logger.LogDebug("ID:" + imageTask.JobId);
 
-                    // imageTask.Task.Start();
-                    //imageTask.Task = new Task(() => { });
                     this._artistService.AddToQueue(imageTask);
                 }
             }

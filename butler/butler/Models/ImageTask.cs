@@ -12,7 +12,6 @@ namespace Butler.Models
         public string JobId { get; set; }
         public List<Image> CroppedImages { get; set; }
         public string OriginalExtension { get; set; }
-        public Task Task { get; set; }
         public ImageTaskStatusCode Status;
 
         public string ToJson() {
