@@ -248,6 +248,8 @@ public class GalleryActivity extends AppCompatActivity {
 
                         ImageTaskStatus status = ImageTaskStatus.parse(imageTask.getStatus());
 
+                        _dialog.setMessage(status.getMessage());
+
                         if (status == ImageTaskStatus.FINISHED) {
                             getImage(imageTask);
                             return;

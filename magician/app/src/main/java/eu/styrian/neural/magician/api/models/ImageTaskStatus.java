@@ -5,21 +5,23 @@ package eu.styrian.neural.magician.api.models;
  */
 
 public class ImageTaskStatus {
-    public static ImageTaskStatus UPLOADED = new ImageTaskStatus(0);
-    public static ImageTaskStatus IN_DETECTOR_QUEUE = new ImageTaskStatus(1);
-    public static ImageTaskStatus IN_DETECTOR = new ImageTaskStatus(2);
-    public static ImageTaskStatus IN_IMAGE_QUEUE = new ImageTaskStatus(3);
-    public static ImageTaskStatus IN_ARTIST = new ImageTaskStatus(4);
-    public static ImageTaskStatus IN_MERGE_QUEUE = new ImageTaskStatus(5);
-    public static ImageTaskStatus MERGING = new ImageTaskStatus(6);
-    public static ImageTaskStatus FINISHED = new ImageTaskStatus(7);
-    public static ImageTaskStatus ERROR = new ImageTaskStatus(8);
+    public static ImageTaskStatus UPLOADED = new ImageTaskStatus(0, "Uploaded.");
+    public static ImageTaskStatus IN_DETECTOR_QUEUE = new ImageTaskStatus(1, "In Detector queue.");
+    public static ImageTaskStatus IN_DETECTOR = new ImageTaskStatus(2, "In Detector.");
+    public static ImageTaskStatus IN_IMAGE_QUEUE = new ImageTaskStatus(3, "In Artist queue.");
+    public static ImageTaskStatus IN_ARTIST = new ImageTaskStatus(4, "In Artist.");
+    public static ImageTaskStatus IN_MERGE_QUEUE = new ImageTaskStatus(5, "In merge queue.");
+    public static ImageTaskStatus MERGING = new ImageTaskStatus(6, "Is merging.");
+    public static ImageTaskStatus FINISHED = new ImageTaskStatus(7, "Finished!");
+    public static ImageTaskStatus ERROR = new ImageTaskStatus(8, "Error on server.");
 
 
     private final int code;
+    private final String message;
 
-    private ImageTaskStatus(int code) {
+    private ImageTaskStatus(int code, String message) {
         this.code = code;
+        this.message = message;
     }
 
     public static ImageTaskStatus parse(int code) {
@@ -62,5 +64,5 @@ public class ImageTaskStatus {
     public int getCode() {
         return this.code;
     }
-
+    public String getMessage() { return this.message; }
 }
