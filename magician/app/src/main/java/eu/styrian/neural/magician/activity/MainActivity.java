@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.button_camera)
     public void clickToCamera() {
         Log.d("TAG", "GOTO CAMERA");
-        //Intent i = new Intent(getApplicationContext(), CameraActivity.class);
-        //startActivity(i);
+        Intent i = new Intent(getApplicationContext(), CameraActivity.class);
+        startActivity(i);
 
         /*Observable<List<Post>> posts = ApiServiceFactory.getPostService().getAll();
 

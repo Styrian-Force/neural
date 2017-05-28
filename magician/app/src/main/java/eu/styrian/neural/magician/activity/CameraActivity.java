@@ -3,6 +3,7 @@ package eu.styrian.neural.magician.activity;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 
 import eu.styrian.neural.magician.R;
@@ -240,7 +243,8 @@ public class CameraActivity extends AppCompatActivity implements
                     File outputDir = getApplicationContext().getCacheDir(); // context being the Activity pointer
                     File outputFile = null;
                     try {
-                        outputFile = File.createTempFile("picture", "jpg", outputDir);
+                        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+                        outputFile = File.createTempFile("picture" + timeStamp, "jpg", outputDir);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -250,6 +254,8 @@ public class CameraActivity extends AppCompatActivity implements
                         os = new FileOutputStream(outputFile);
                         os.write(data);
                         os.close();
+
+                        toCameraImage(outputFile.getPath());
                     } catch (IOException e) {
                         Log.w(TAG, "Cannot write to " + outputFile, e);
                     } finally {
@@ -266,6 +272,12 @@ public class CameraActivity extends AppCompatActivity implements
         }
 
     };
+
+    public void toCameraImage(String imageFilePath) {
+        Intent i = new Intent(getApplicationContext(), CameraImageActivity.class);
+        i.putExtra("imageFilePath", imageFilePath);
+        startActivity(i);
+    }
 
     public static class ConfirmationDialogFragment extends DialogFragment {
 
