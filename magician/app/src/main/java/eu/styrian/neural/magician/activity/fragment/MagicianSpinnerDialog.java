@@ -30,7 +30,7 @@ public class MagicianSpinnerDialog extends DialogFragment {
         return _dialog;
     }
 
-    public void setMessage(final String message) {
+    public void setMessageAsync(final String message) {
         Runnable changeMessage = new Runnable() {
             @Override
             public void run() {
@@ -40,5 +40,9 @@ public class MagicianSpinnerDialog extends DialogFragment {
         };
 
         changeMessage.run();
+    }
+
+    public void setMessage(final String message) {
+        _dialog.setMessage(message);
     }
 }

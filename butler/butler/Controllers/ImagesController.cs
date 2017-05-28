@@ -86,7 +86,7 @@ namespace Butler.Controllers
             }
 
             var mergedImage = System.IO.File.OpenRead(mergedImagePath);
-            return File(mergedImage, "image/png");            
+            return File(mergedImage, "image/jpg");            
         }
 
         [HttpGet("{id}/status")]

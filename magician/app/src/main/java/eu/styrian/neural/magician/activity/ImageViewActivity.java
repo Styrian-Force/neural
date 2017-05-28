@@ -3,7 +3,6 @@ package eu.styrian.neural.magician.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,7 +25,6 @@ import eu.styrian.neural.magician.api.models.ImageTask;
 import eu.styrian.neural.magician.api.models.ImageTaskStatus;
 import eu.styrian.neural.magician.api.request.ImageRequestFactory;
 import eu.styrian.neural.magician.api.utils.ApiServiceFactory;
-import eu.styrian.neural.magician.util.FileUtil;
 import eu.styrian.neural.magician.util.ImageProcessingUtil;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -104,6 +102,7 @@ public class ImageViewActivity extends AppCompatActivity {
         MultipartBody.Part imageFileBody = ImageRequestFactory.getInstance().generatePostRequest(file);
 
         Observable<ImageTask> onImage = _imageService.post(imageFileBody);
+        //_dialog.setMessage("Uploading.");
 
         onImage.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -120,6 +119,9 @@ public class ImageViewActivity extends AppCompatActivity {
 
                     @Override
                     public final void onNext(ImageTask imageTask) {
+                        ImageTaskStatus status = ImageTaskStatus.parse(imageTask.getStatus());
+
+                        _dialog.setMessageAsync(status.getMessage());
                         checkImageTaskStatus(imageTask);
                     }
                 });
@@ -205,6 +207,8 @@ public class ImageViewActivity extends AppCompatActivity {
                         }
 
                         ImageTaskStatus status = ImageTaskStatus.parse(imageTask.getStatus());
+
+                        _dialog.setMessageAsync(status.getMessage());
 
                         if (status == ImageTaskStatus.FINISHED) {
                             getImage(imageTask);

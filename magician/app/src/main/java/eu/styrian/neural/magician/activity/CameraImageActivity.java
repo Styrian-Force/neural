@@ -42,6 +42,13 @@ public class CameraImageActivity extends AppCompatActivity {
         imageView.setImageURI(uri);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        imageFile.delete();
+    }
+
     @OnClick(R.id.button_accept_image)
     public void acceptImage(View view) {
         Log.d("asd", "BUTTON ACCEPT IMAGE!");
