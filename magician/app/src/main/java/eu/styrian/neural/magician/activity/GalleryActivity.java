@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +28,7 @@ import eu.styrian.neural.magician.R;
 import eu.styrian.neural.magician.api.interfaces.ImageService;
 import eu.styrian.neural.magician.api.interfaces.ImageTaskService;
 import eu.styrian.neural.magician.api.models.ImageTask;
+import eu.styrian.neural.magician.api.models.ImageTaskStatus;
 import eu.styrian.neural.magician.api.models.Value;
 import eu.styrian.neural.magician.api.request.ImageRequestFactory;
 import eu.styrian.neural.magician.api.utils.ApiServiceFactory;
@@ -255,13 +257,12 @@ public class GalleryActivity extends AppCompatActivity {
                     @Override
                     public final void onNext(ImageTask imageTask) {
                         checkImageTaskStatus(imageTask);
-                        buttonSend.setEnabled(true);
                     }
                 });
     }
 
 
-    public void checkImageTaskStatus(ImageTask imageTaskIn) {
+    public void checkImageTaskStatus(final ImageTask imageTaskIn) {
         if(imageTaskIn == null) {
             Log.d(this.getClass().toString(), "ImageTask in null.");
             return;
@@ -269,7 +270,8 @@ public class GalleryActivity extends AppCompatActivity {
         
         Observable<ImageTask> onImageTask = _imageTaskService.getById(imageTaskIn.getJobId());
 
-        onImageTask.subscribeOn(Schedulers.newThread())
+        onImageTask.delay(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ImageTask>() {
                     @Override
@@ -284,11 +286,61 @@ public class GalleryActivity extends AppCompatActivity {
                     @Override
                     public final void onNext(ImageTask imageTask) {
                         Log.d(this.getClass().toString(), "imageTask: " + imageTask.getJobId());
-                        //checkImageTaskStatus(imageTask);
+
+                        if(imageTask == null) {
+                            Log.d(this.getClass().toString(), "ImageTask in null.");
+                            return;
+                        }
+
+                        ImageTaskStatus status = ImageTaskStatus.parse(imageTask.getStatus());
+
+                        if(status == ImageTaskStatus.FINISHED) {
+                            getImage(imageTask);
+                            return;
+                        }
+                        else if (status == ImageTaskStatus.ERROR) {
+                            Log.d(this.getClass().toString(), "Error in image task.");
+                            return;
+                        }
+                        else  {
+                            Log.d(this.getClass().toString(), "CurrentStatus: " + imageTask.getStatus());
+                            checkImageTaskStatus(imageTask);
+                            return;
+                        }
 
                     }
                 });
     }
 
+    private void getImage(ImageTask imageTask) {
+        Log.d(this.getClass().toString(), "GET_IMAGE: " + imageTask.getJobId() + " " + imageTask.getStatus());
+
+        Observable<Response<ResponseBody>> onImage = _imageService.getById(imageTask.getJobId());
+        Log.i("", "neki - ");
+        onImage.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response<ResponseBody>>() {
+                    @Override
+                    public final void onCompleted() {
+                    }
+
+                    @Override
+                    public final void onError(Throwable e) {
+                        Log.d("error", e.getMessage());
+                    }
+
+                    @Override
+                    public final void onNext(Response<ResponseBody> response) {
+                        Log.d("success", response.body() + " asd");
+                        Log.i("", "neki - success" + response.code());
+                        if (response.isSuccessful()) {
+                            Log.i("", "neki - success" + response.body().contentLength());
+                            Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
+                            imageView.setImageBitmap(bitmap);
+                        }
+                        buttonSend.setEnabled(true);
+                    }
+                });
+    }
 
 }
