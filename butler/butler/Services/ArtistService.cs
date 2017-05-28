@@ -47,6 +47,7 @@ namespace Butler.Services
         {
             lock (queue)
             {
+                imageTask.Status = ImageTaskStatusCode.ImageInArtistQueue;
                 this._imageTaskStatusService.AddToLog(
                     imageTask,
                     ImageTaskStatus.ImageInArtistQueue()
@@ -57,6 +58,7 @@ namespace Butler.Services
 
         private ProcessStartInfo GetArtistProcessInfo(ImageTask imageTask)
         {
+            imageTask.Status = ImageTaskStatusCode.ImageInArtist;
             this._imageTaskStatusService.AddToLog(
                 imageTask,
                 ImageTaskStatus.ImageInArtist()

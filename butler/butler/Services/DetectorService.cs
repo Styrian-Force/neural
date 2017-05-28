@@ -54,6 +54,7 @@ namespace Butler.Services
             lock (queue)
             {
                 queue.Enqueue(imageTask);
+                imageTask.Status = ImageTaskStatusCode.ImageInDetectorQueue;
                 this._imageTaskStatusService.AddToLog(
                     imageTask,
                     ImageTaskStatus.ImageInDetectorQueue()
@@ -124,6 +125,7 @@ namespace Butler.Services
 
                 if (imageTask != null)
                 {
+                    imageTask.Status = ImageTaskStatusCode.ImageInDetector;
                     this._imageTaskStatusService.AddToLog(
                         imageTask,
                         ImageTaskStatus.ImageInDetector()
