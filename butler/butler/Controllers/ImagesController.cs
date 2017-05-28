@@ -64,7 +64,7 @@ namespace Butler.Controllers
             ImageTask imageTask = new ImageTask();
             imageTask.JobId = id;
 
-            //Console.WriteLine("Id: " + id);
+            //_logger.LogDebug("Id: " + id);
             // TODO: Change to artist
             string detectorImagePath = this._fileService.GetDetectorImagePathWithExt(imageTask);
 
@@ -132,7 +132,7 @@ namespace Butler.Controllers
                 this._detectorService.AddToQueue(imageTask);
 
                 imageTask.Task.Wait();
-                Console.WriteLine("DETECTOR_END");
+                _logger.LogDebug("DETECTOR_END");
 
                 List<ImageTaskStatus> statuses = _imageTaskStatusService.ReadLog(imageTask);
 
@@ -140,11 +140,11 @@ namespace Butler.Controllers
 
                 this._artistService.AddToQueue(imageTask);
                 imageTask.Task.Wait();
-                Console.WriteLine("ARTIST_END");
+                _logger.LogDebug("ARTIST_END");
 
                 this._imageService.MergeImages(imageTask);
 
-                Console.WriteLine("IMAGE_SERVICE_END");
+                _logger.LogDebug("IMAGE_SERVICE_END");
 
                 string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
                 var mergedImage = System.IO.File.OpenRead(mergedImagePath);

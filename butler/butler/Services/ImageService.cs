@@ -27,8 +27,8 @@ namespace Butler.Services
             IFileService fileService
         )
         {
-            Console.WriteLine("IMAGE_SERVICE: Image Service constructor");
             this._logger = logger;
+            _logger.LogDebug("IMAGE_SERVICE: Image Service constructor");            
             this._fileService = fileService;
 
             Configuration.Default.AddImageFormat(new JpegFormat());

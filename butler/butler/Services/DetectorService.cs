@@ -28,8 +28,8 @@ namespace Butler.Services
             IImageTaskStatusService taskStatusService
         )
         {
-            Console.WriteLine("DETECTOR_SERVICE: DetectorService konstruktor");
             this._logger = logger;
+            _logger.LogDebug("DETECTOR_SERVICE: DetectorService konstruktor");
             this._fileService = fileSerice;
             this._imageTaskStatusService = taskStatusService;
 
@@ -100,12 +100,11 @@ namespace Butler.Services
 
                 if (line == "DETECTOR_READY")
                 {
-                    Console.WriteLine("DETECTOR IS READY");
+                    _logger.LogDebug("DETECTOR IS READY");
                     break;
                 }
             }
 
-            Console.WriteLine("DoWork thread finished! DetectorReady!");
             this.HandleQueue();
         }
 
@@ -152,7 +151,7 @@ namespace Butler.Services
                         if(message == null) {
                             continue;
                         }
-                        Debug.WriteLine("DETECTOR_OUTPUT: " + message);
+                        _logger.LogDebug("DETECTOR_OUTPUT: " + message);
                         if (message == "FINISHED_SUCCESSFULLY")
                         {                            
                             break;
@@ -165,7 +164,7 @@ namespace Butler.Services
                     }
                     imageTask.CroppedImages = croppedImages;
                     _logger.LogDebug(originalImagePath + " successfully created.");
-                    Console.WriteLine("ID:" + imageTask.JobId);
+                    _logger.LogDebug("ID:" + imageTask.JobId);
 
                     imageTask.Task.Start();
                 }

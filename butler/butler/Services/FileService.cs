@@ -20,8 +20,8 @@ namespace Butler.Services
             ILogger<FileService> logger
         )
         {
-            Console.WriteLine("FILE_SERVICE: File Service constructor");
             this._logger = logger;
+            _logger.LogDebug("FILE_SERVICE: File Service constructor");            
             CreateDir(ButlerConfig.DATABASE_DIR);
         }
 

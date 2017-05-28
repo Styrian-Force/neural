@@ -31,9 +31,8 @@ namespace Butler.Services
             IImageTaskStatusService taskStatusService
         )
         {
-            Console.WriteLine("ALERT_SERVICE: Artist Service constructor");
-
             this._logger = logger;
+            _logger.LogDebug("ALERT_SERVICE: Artist Service constructor");            
             this._fileService = fileService;
             this._imageTaskStatusService = taskStatusService;
 
@@ -126,7 +125,7 @@ namespace Butler.Services
                         }
                     }
 
-                    Console.WriteLine("ID:" + imageTask.JobId);
+                    _logger.LogDebug("ID:" + imageTask.JobId);
                     imageTask.Task.Start();
                 }
             }
