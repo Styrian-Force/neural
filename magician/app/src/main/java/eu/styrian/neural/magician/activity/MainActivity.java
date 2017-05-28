@@ -13,6 +13,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import eu.styrian.neural.magician.R;
+import eu.styrian.neural.magician.api.models.ImageTask;
+import eu.styrian.neural.magician.api.models.ImageTaskStatus;
 import eu.styrian.neural.magician.api.models.Post;
 import eu.styrian.neural.magician.api.models.Value;
 import eu.styrian.neural.magician.api.utils.ApiServiceFactory;
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("success", values.size() + " asd");
                     }
                 });*/
-
+    /*
         Observable<List<Value>> posts = ApiServiceFactory.getValueService().getAll();
 
         posts.subscribeOn(Schedulers.newThread())
@@ -105,6 +107,27 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public final void onNext(Value value) {
                         Log.d("success", value.getCode() + " asd");
+                    }
+                });
+
+                */
+        Observable<ImageTask> onImageTask = ApiServiceFactory.getImageTaskService().getById("2017-05-28_20-19-35.112");
+
+        onImageTask.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ImageTask>() {
+                    @Override
+                    public final void onCompleted() {
+                    }
+
+                    @Override
+                    public final void onError(Throwable e) {
+                        Log.d("error", e.getMessage());
+                    }
+
+                    @Override
+                    public final void onNext(ImageTask imageTask) {
+                        Log.d("success", imageTask.getJobId() + " " + (ImageTaskStatus.parse(imageTask.getStatus()) == ImageTaskStatus.FINISHED) + " asd");
                     }
                 });
     }

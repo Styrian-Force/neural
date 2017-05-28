@@ -22,7 +22,7 @@ public interface ImageService {
 
     @Multipart
     @POST("api/images")
-    Observable<Response> post(@Part MultipartBody.Part file);
+    Observable<Response<ResponseBody>> post(@Part MultipartBody.Part file);
 
 }
 
