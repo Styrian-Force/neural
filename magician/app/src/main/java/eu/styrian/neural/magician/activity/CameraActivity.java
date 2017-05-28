@@ -50,7 +50,9 @@ public class CameraActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback,
         AspectRatioFragment.Listener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = CameraActivity.class.toString();
+
+    private static final int IMAGE__RESIZE_MAX = 1024;
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
 
@@ -242,7 +244,12 @@ public class CameraActivity extends AppCompatActivity implements
             Log.d(TAG, "onPictureTaken " + data.length);
 
             Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            Bitmap resized = ImageProcessingUtil.resizeBitmap(bitmap, 500, bitmap.getHeight() * 500 / bitmap.getWidth());
+            Bitmap resized;
+            if (bitmap.getWidth() > bitmap.getHeight()) {
+                resized = ImageProcessingUtil.resizeBitmap(bitmap, IMAGE__RESIZE_MAX, bitmap.getHeight() * IMAGE__RESIZE_MAX / bitmap.getWidth());
+            } else {
+                resized = ImageProcessingUtil.resizeBitmap(bitmap, bitmap.getWidth() * IMAGE__RESIZE_MAX / bitmap.getHeight(), IMAGE__RESIZE_MAX);
+            }
 
             ByteArrayOutputStream blob = new ByteArrayOutputStream();
             resized.compress(Bitmap.CompressFormat.JPEG, 75, blob);
@@ -253,7 +260,7 @@ public class CameraActivity extends AppCompatActivity implements
                 @Override
                 public void run() {
                     File outputFile = FileUtil.createTemporaryFile("camera_image", "jpg", getApplicationContext());
-//                    File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg");
+                    
                     OutputStream os = null;
                     try {
                         os = new FileOutputStream(outputFile);
