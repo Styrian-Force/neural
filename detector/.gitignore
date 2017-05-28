@@ -15,6 +15,7 @@ decaf/
 submission/
 # cfg/
 darknet
+detector
 .fuse*
 weights/
 

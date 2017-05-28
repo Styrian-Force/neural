@@ -20,6 +20,7 @@ namespace Butler.Interfaces
         string GetTransparentImagePath(ImageTask imageTask);
         string GetTransparentImagePathWithExt(ImageTask imageTask);
         string GetTaskStatusLogPath(ImageTask imageTask);
+        string GetImageTaskPath(ImageTask imageTask);
         void CreateDir(string path);
     }
 }

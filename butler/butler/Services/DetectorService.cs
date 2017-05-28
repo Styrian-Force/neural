@@ -28,8 +28,8 @@ namespace Butler.Services
             IImageTaskStatusService taskStatusService
         )
         {
-            Console.WriteLine("DETECTOR_SERVICE: DetectorService konstruktor");
             this._logger = logger;
+            _logger.LogDebug("DETECTOR_SERVICE: DetectorService konstruktor");
             this._fileService = fileSerice;
             this._imageTaskStatusService = taskStatusService;
 
@@ -54,6 +54,7 @@ namespace Butler.Services
             lock (queue)
             {
                 queue.Enqueue(imageTask);
+                imageTask.Status = ImageTaskStatusCode.ImageInDetectorQueue;
                 this._imageTaskStatusService.AddToLog(
                     imageTask,
                     ImageTaskStatus.ImageInDetectorQueue()
@@ -71,7 +72,7 @@ namespace Butler.Services
             info.RedirectStandardInput = true;
             info.RedirectStandardError = true;
             info.WorkingDirectory = ButlerConfig.NEURAL_GIT_DIR + "detector";
-            info.FileName = info.WorkingDirectory + "/darknet";
+            info.FileName = info.WorkingDirectory + "/detector";
 
             string arguments = "detect";
             arguments += " " + WEIGHTS.CfgPath;
@@ -99,12 +100,11 @@ namespace Butler.Services
 
                 if (line == "DETECTOR_READY")
                 {
-                    Console.WriteLine("DETECTOR IS READY");
+                    _logger.LogDebug("DETECTOR IS READY");
                     break;
                 }
             }
 
-            Console.WriteLine("DoWork thread finished! DetectorReady!");
             this.HandleQueue();
         }
 
@@ -124,6 +124,7 @@ namespace Butler.Services
 
                 if (imageTask != null)
                 {
+                    imageTask.Status = ImageTaskStatusCode.ImageInDetector;
                     this._imageTaskStatusService.AddToLog(
                         imageTask,
                         ImageTaskStatus.ImageInDetector()
@@ -150,7 +151,7 @@ namespace Butler.Services
                         if(message == null) {
                             continue;
                         }
-                        Debug.WriteLine("DETECTOR_OUTPUT: " + message);
+                        _logger.LogDebug("DETECTOR_OUTPUT: " + message);
                         if (message == "FINISHED_SUCCESSFULLY")
                         {                            
                             break;
@@ -163,9 +164,9 @@ namespace Butler.Services
                     }
                     imageTask.CroppedImages = croppedImages;
                     _logger.LogDebug(originalImagePath + " successfully created.");
-                    Console.WriteLine("ID:" + imageTask.JobId);
+                    _logger.LogDebug("ID:" + imageTask.JobId);
 
-                    imageTask.task.Start();
+                    imageTask.Task.Start();
                 }
             }
         }

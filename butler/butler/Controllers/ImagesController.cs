@@ -24,7 +24,7 @@ namespace Butler.Controllers
     [Route("api/[controller]")]
     public class ImagesController : Controller
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<ImagesController> _logger;
         private readonly IDetectorService _detectorService;
         private readonly IArtistService _artistService;
         private readonly IImageService _imageService;
@@ -51,7 +51,7 @@ namespace Butler.Controllers
             this._imageTaskStatusService = taskStatusService;
         }
 
-        // GET: api/values
+        // GET: api/images
         [HttpGet]
         public IEnumerable<string> Get()
         {
@@ -64,7 +64,7 @@ namespace Butler.Controllers
             ImageTask imageTask = new ImageTask();
             imageTask.JobId = id;
 
-            Console.WriteLine("Id: " + id);
+            //_logger.LogDebug("Id: " + id);
             // TODO: Change to artist
             string detectorImagePath = this._fileService.GetDetectorImagePathWithExt(imageTask);
 
@@ -74,7 +74,7 @@ namespace Butler.Controllers
             }
 
             var detectorImage = System.IO.File.OpenRead(detectorImagePath);
-            return File(detectorImage, "image/png");
+            return File(detectorImage, "image/png");            
         }
 
         [HttpPost]
@@ -105,6 +105,7 @@ namespace Butler.Controllers
             ImageTask imageTask = new ImageTask();
             imageTask.JobId = this._idService.GenerateId();
             imageTask.OriginalExtension = Path.GetExtension(file.FileName);
+            imageTask.Status = ImageTaskStatusCode.ImageUploaded;
 
             string workingDir = this._fileService.GetWorkingDir(imageTask);
             string detectorDir = this._fileService.GetDetectorDir(imageTask);
@@ -126,24 +127,24 @@ namespace Butler.Controllers
                 file.CopyTo(fileStream);
 
 
-                imageTask.task = new Task(() => { });
+                imageTask.Task = new Task(() => { });
 
                 this._detectorService.AddToQueue(imageTask);
 
-                imageTask.task.Wait();
-                Console.WriteLine("DETECTOR_END");
+                imageTask.Task.Wait();
+                _logger.LogDebug("DETECTOR_END");
 
                 List<ImageTaskStatus> statuses = _imageTaskStatusService.ReadLog(imageTask);
 
-                imageTask.task = new Task(() => { });
+                imageTask.Task = new Task(() => { });
 
                 this._artistService.AddToQueue(imageTask);
-                imageTask.task.Wait();
-                Console.WriteLine("ARTIST_END");
+                imageTask.Task.Wait();
+                _logger.LogDebug("ARTIST_END");
 
                 this._imageService.MergeImages(imageTask);
-                
-                Console.WriteLine("IMAGE_SERVICE_END");
+
+                _logger.LogDebug("IMAGE_SERVICE_END");
 
                 string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
                 var mergedImage = System.IO.File.OpenRead(mergedImagePath);
@@ -161,16 +162,18 @@ namespace Butler.Controllers
             //return StatusCode(200);
         }
 
-        // PUT api/values/5
+        // PUT api/images/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
         {
+            throw new NotImplementedException();
         }
 
-        // DELETE api/values/5
+        // DELETE api/images/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            throw new NotImplementedException();
         }
 
     }
