@@ -3,7 +3,7 @@ Ubuntu 16.04
 ######################################################
 #### INSTALL INSTRUCTIONS
 
-1. Install asp dotnet core:
+1. Install asp dotnet core for Ubuntu 16.04:
 - https://www.microsoft.com/net/core#linuxubuntu
 
 2. Install and configure nginx server

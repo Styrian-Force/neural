@@ -71,7 +71,7 @@ namespace Butler.Services
             info.RedirectStandardInput = true;
             info.RedirectStandardError = true;
             info.WorkingDirectory = ButlerConfig.NEURAL_GIT_DIR + "detector";
-            info.FileName = info.WorkingDirectory + "/darknet";
+            info.FileName = info.WorkingDirectory + "/detector";
 
             string arguments = "detect";
             arguments += " " + WEIGHTS.CfgPath;
