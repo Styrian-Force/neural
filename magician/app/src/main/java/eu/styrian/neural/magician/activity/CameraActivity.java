@@ -249,7 +249,7 @@ public class CameraActivity extends AppCompatActivity implements
                         os.write(data);
                         os.close();
 
-                        toCameraImage(outputFile.getPath());
+                        toCameraImageActivity(outputFile.getPath());
                     } catch (IOException e) {
                         Log.w(TAG, "Cannot write to " + outputFile, e);
                     } finally {
@@ -267,7 +267,7 @@ public class CameraActivity extends AppCompatActivity implements
 
     };
 
-    public void toCameraImage(String imageFilePath) {
+    public void toCameraImageActivity(String imageFilePath) {
         Intent i = new Intent(getApplicationContext(), CameraImageActivity.class);
         i.putExtra("imageFilePath", imageFilePath);
         startActivity(i);
