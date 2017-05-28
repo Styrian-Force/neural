@@ -63,7 +63,13 @@ public class GalleryActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
-                selectedImagePath = getRealPathFromURI(getApplicationContext(), selectedImageUri);
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                Cursor cursor = this.getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                selectedImagePath= cursor.getString(columnIndex);
+                cursor.close();
+
                 imageView.setImageURI(selectedImageUri);
                 Log.d("", "ssss" + selectedImagePath);
             }
@@ -105,10 +111,10 @@ public class GalleryActivity extends AppCompatActivity {
     @OnClick(R.id.button_send)
     public void sendImage(View view) {
         Log.d("asd", "BUTTON SEND!" + this.selectedImagePath);
-        /*
+
         this.buttonSend.setEnabled(false);
         if(this.selectedImagePath == null) {
-            Log.d("EWROR", "BUTTON SEND!");
+            Log.d("ERROR1", "ni datoteke!!! ne more poslati");
             this.buttonSend.setEnabled(true);
             return;
         }
@@ -116,13 +122,13 @@ public class GalleryActivity extends AppCompatActivity {
         File file = new File(this.selectedImagePath);
 
         if(!file.exists()) {
-            Log.d("EWROR", "BUTTON!");
+            Log.d("ERROR1", "ni datoteke!!! ne more poslati");
             this.buttonSend.setEnabled(true);
             return;
         }
 
         MultipartBody.Part imageFileBody = ImageRequestFactory.getInstance().generatePostRequest(file);
-        */
+
         /* Call<ResponseBody> call = imageService.post(imageFileBody);
 
         call.enqueue(new Callback<ResponseBody>() {
@@ -142,9 +148,37 @@ public class GalleryActivity extends AppCompatActivity {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("", " - fail" + t.getMessage());
             }
-        });*/
+        });
 
         Observable<Response<ResponseBody>> onImage = imageService.getById("2017-05-15_16-37-09.770");
+        Log.i("", "neki - ");
+        onImage.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response<ResponseBody>>() {
+                    @Override
+                    public final void onCompleted() {
+                    }
+
+                    @Override
+                    public final void onError(Throwable e) {
+                        Log.d("error", e.getMessage());
+                    }
+
+                    @Override
+                    public final void onNext(Response<ResponseBody> response) {
+                        Log.d("success", response.body() + " asd");
+                        Log.i("", "neki - success" + response.code());
+                        if (response.isSuccessful()) {
+                            Log.i("", "neki - success" + response.body().contentLength());
+                            Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
+                            imageView.setImageBitmap(bitmap);
+                        }
+                        buttonSend.setEnabled(true);
+                    }
+                });
+               */
+
+        Observable<Response<ResponseBody>> onImage = imageService.post(imageFileBody);
         Log.i("", "neki - ");
         onImage.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
