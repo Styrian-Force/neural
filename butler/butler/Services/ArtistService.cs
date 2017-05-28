@@ -19,22 +19,25 @@ namespace Butler.Services
         private static readonly bool ORIGINAL_COLORS = false;
         private static readonly string STYLE_MODEL = "udnie.ckpt";
 
-        private ILogger<ArtistService> _logger;
-        private IFileService _fileService;
+        private readonly ILogger<ArtistService> _logger;
+        private readonly IFileService _fileService;
         private readonly IImageTaskStatusService _imageTaskStatusService;
+        private readonly IImageService _imageService;
 
-        private Queue<ImageTask> queue;
+        private readonly Queue<ImageTask> queue;
 
         public ArtistService(
             ILogger<ArtistService> logger,
             IFileService fileService,
-            IImageTaskStatusService taskStatusService
+            IImageTaskStatusService taskStatusService,
+            IImageService imageService
         )
         {
             this._logger = logger;
             _logger.LogDebug("ALERT_SERVICE: Artist Service constructor");            
             this._fileService = fileService;
             this._imageTaskStatusService = taskStatusService;
+            this._imageService = imageService;
 
             this.queue = new Queue<ImageTask>();
 
@@ -126,7 +129,8 @@ namespace Butler.Services
                     }
 
                     _logger.LogDebug("ID:" + imageTask.JobId);
-                    imageTask.Task.Start();
+                    //imageTask.Task.Start();
+                    this._imageService.AddToQueue(imageTask);
                 }
             }
         }

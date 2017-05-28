@@ -89,17 +89,17 @@ namespace Butler.Controllers
             if (file == null)
             {
                 _logger.LogError("File is null.");
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return NotFound("File is null.");
             }
             else if (file.Length <= 0)
             {
                 _logger.LogError("No files in request.");
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return NotFound("No files in request.");
             }
             else if (!this._imageService.FileTypeSupported(file))
             {
                 _logger.LogError("File type is not supported.");
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return NotFound("File type is not supported.");
             }
 
             ImageTask imageTask = new ImageTask();
@@ -126,29 +126,28 @@ namespace Butler.Controllers
             {
                 file.CopyTo(fileStream);
 
-
-                imageTask.Task = new Task(() => { });
+                //imageTask.Task = new Task(() => { });
 
                 this._detectorService.AddToQueue(imageTask);
 
-                imageTask.Task.Wait();
-                _logger.LogDebug("DETECTOR_END");
+                //imageTask.Task.Wait();
+                //_logger.LogDebug("DETECTOR_END");
 
-                List<ImageTaskStatus> statuses = _imageTaskStatusService.ReadLog(imageTask);
+                //List<ImageTaskStatus> statuses = _imageTaskStatusService.ReadLog(imageTask);
 
-                imageTask.Task = new Task(() => { });
+                //imageTask.Task = new Task(() => { });
 
-                this._artistService.AddToQueue(imageTask);
-                imageTask.Task.Wait();
-                _logger.LogDebug("ARTIST_END");
+                //this._artistService.AddToQueue(imageTask);
+                //imageTask.Task.Wait();
+                //_logger.LogDebug("ARTIST_END");
 
-                this._imageService.MergeImages(imageTask);
+                //this._imageService.MergeImages(imageTask);
 
-                _logger.LogDebug("IMAGE_SERVICE_END");
+                //_logger.LogDebug("IMAGE_SERVICE_END");
 
-                string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
-                var mergedImage = System.IO.File.OpenRead(mergedImagePath);
-                return File(mergedImage, "image/png");
+                //string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
+                //var mergedImage = System.IO.File.OpenRead(mergedImagePath);
+                //return File(mergedImage, "image/png");
                 /*this._imageTaskStatusService.AddToLog(
                     imageTask,
                     ImageTaskStatus.ImageFinished()
@@ -160,6 +159,7 @@ namespace Butler.Controllers
                 return File(mergedImage, "image/png");*/
             }
             //return StatusCode(200);
+            return Ok(imageTask);
         }
 
         // PUT api/images/5

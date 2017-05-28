@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Butler.Config;
 using Butler.Interfaces;
 using Butler.Models;
@@ -18,20 +19,23 @@ namespace Butler.Services
         private ILogger<DetectorService> _logger;
         private IFileService _fileService;
         private readonly IImageTaskStatusService _imageTaskStatusService;
+        private readonly IArtistService _artistService;
 
         private Process detectorProcess;
-        private Queue<ImageTask> queue;
+        private readonly Queue<ImageTask> queue;
 
         public DetectorService(
             ILogger<DetectorService> logger,
             IFileService fileSerice,
-            IImageTaskStatusService taskStatusService
+            IImageTaskStatusService taskStatusService,
+            IArtistService artistService
         )
         {
             this._logger = logger;
             _logger.LogDebug("DETECTOR_SERVICE: DetectorService konstruktor");
             this._fileService = fileSerice;
             this._imageTaskStatusService = taskStatusService;
+            this._artistService = artistService;
 
             this.queue = new Queue<ImageTask>();
 
@@ -166,7 +170,9 @@ namespace Butler.Services
                     _logger.LogDebug(originalImagePath + " successfully created.");
                     _logger.LogDebug("ID:" + imageTask.JobId);
 
-                    imageTask.Task.Start();
+                    // imageTask.Task.Start();
+                    //imageTask.Task = new Task(() => { });
+                    this._artistService.AddToQueue(imageTask);
                 }
             }
         }

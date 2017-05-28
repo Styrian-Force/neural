@@ -15,10 +15,10 @@ namespace Butler.Controllers
         private readonly ILogger<ImageTasksController> _logger;
         private readonly IImageTaskStatusService _imageTaskStatusService;
 
-public ImageTasksController(
-            ILogger<ImageTasksController> logger,
-            IImageTaskStatusService taskStatusService
-            )
+        public ImageTasksController(
+                    ILogger<ImageTasksController> logger,
+                    IImageTaskStatusService taskStatusService
+                    )
         {
             this._logger = logger;
             this._imageTaskStatusService = taskStatusService;

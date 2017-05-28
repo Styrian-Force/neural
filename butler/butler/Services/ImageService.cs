@@ -22,24 +22,43 @@ namespace Butler.Services
         private ILogger<ImageService> _logger;
         private IFileService _fileService;
 
+        private readonly Queue<ImageTask> queue;
+
         public ImageService(
             ILogger<ImageService> logger,
             IFileService fileService
         )
         {
             this._logger = logger;
-            _logger.LogDebug("IMAGE_SERVICE: Image Service constructor");            
+            _logger.LogDebug("IMAGE_SERVICE: Image Service constructor");
             this._fileService = fileService;
 
             Configuration.Default.AddImageFormat(new JpegFormat());
             Configuration.Default.AddImageFormat(new PngFormat());
             Configuration.Default.AddImageFormat(new GifFormat());
             Configuration.Default.AddImageFormat(new BmpFormat());
+
+            this.queue = new Queue<ImageTask>();
+
+            Thread imageServiceThread = new Thread(HandleQueue);
+            imageServiceThread.Start();
+        }
+
+        public void AddToQueue(ImageTask imageTask)
+        {
+            lock (queue)
+            {
+                queue.Enqueue(imageTask);
+                //imageTask.Status = ImageTaskStatusCode.ImageInDetectorQueue;
+                //this._imageTaskStatusService.AddToLog(
+                //    imageTask,
+                //    ImageTaskStatus.ImageInDetectorQueue()
+                //);
+            }
         }
 
         private void MergeTransparent(Image<Rgba32> finalImage, ImageTask imageTask)
         {
-
             string transparentImagePath = this._fileService.GetTransparentImagePathWithExt(imageTask);
 
             using (PixelAccessor<Rgba32> pixels = finalImage.Lock())
@@ -65,53 +84,47 @@ namespace Butler.Services
             }
         }
 
-        public void MergeImages(ImageTask imageTask)
+        private Image<Rgba32> MergeImages(ImageTask imageTask)
         {
             string originalImagePath = this._fileService.GetOriginalImagePath(imageTask);
             string workingDir = this._fileService.GetWorkingDir(imageTask);
             string artistDir = this._fileService.GetArtistDir(imageTask);
-            string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
 
             using (var original = File.OpenRead(originalImagePath))
             {
-                using (var output = File.OpenWrite(mergedImagePath))
+                Image<Rgba32> finalImage = ImageSharp.Image.Load(original);
+
+                using (PixelAccessor<Rgba32> pixels = finalImage.Lock())
                 {
-                    var finalImage = ImageSharp.Image.Load(original);
-
-                    using (PixelAccessor<Rgba32> pixels = finalImage.Lock())
+                    foreach (Models.Image image in imageTask.CroppedImages)
                     {
-                        foreach (Models.Image image in imageTask.CroppedImages)
+                        string croppedPath = artistDir + image.Id + ".png";
+
+                        using (var cropped = File.OpenRead(croppedPath))
                         {
-                            string croppedPath = artistDir + image.Id + ".png";
-
-                            using (var cropped = File.OpenRead(croppedPath))
+                            var croppedImage = ImageSharp.Image.Load(cropped);
+                            using (PixelAccessor<Rgba32> croppedPixels = croppedImage.Lock())
                             {
-                                var croppedImage = ImageSharp.Image.Load(cropped);
-                                using (PixelAccessor<Rgba32> croppedPixels = croppedImage.Lock())
+                                for (int i = 0; i < croppedPixels.Width; i++)
                                 {
-                                    for (int i = 0; i < croppedPixels.Width; i++)
+                                    for (int j = 0; j < croppedPixels.Height; j++)
                                     {
-                                        for (int j = 0; j < croppedPixels.Height; j++)
-                                        {
-                                            int pixelI = i + image.Left;
-                                            int pixelJ = j + image.Top;
+                                        int pixelI = i + image.Left;
+                                        int pixelJ = j + image.Top;
 
-                                            if (pixelI < 0 || pixelI >= pixels.Width || pixelJ < 0 || pixelJ >= pixels.Height)
-                                            {
-                                                continue;
-                                            }
-                                            pixels[pixelI, pixelJ] = croppedPixels[i, j];
+                                        if (pixelI < 0 || pixelI >= pixels.Width || pixelJ < 0 || pixelJ >= pixels.Height)
+                                        {
+                                            continue;
                                         }
+                                        pixels[pixelI, pixelJ] = croppedPixels[i, j];
                                     }
                                 }
                             }
                         }
                     }
 
-                    MergeTransparent(finalImage, imageTask);
 
-                    //image.Quality = quality;
-                    finalImage.SaveAsPng(output);
+                    return finalImage;
                 }
             }
         }
@@ -129,6 +142,38 @@ namespace Butler.Services
                 return false;
             }
             return true;
+        }
+
+
+        private void HandleQueue()
+        {
+            while (true)
+            {
+                ImageTask imageTask = null;
+
+                lock (queue)
+                {
+                    if (queue.Count > 0)
+                    {
+                        imageTask = queue.Dequeue();
+                    }
+                }
+
+                if (imageTask != null)
+                {
+
+                    Image<Rgba32> finalImage = this.MergeImages(imageTask);
+                    MergeTransparent(finalImage, imageTask);
+
+                    string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
+
+                    using (var output = File.OpenWrite(mergedImagePath))
+                    {
+                        //image.Quality = quality;
+                        finalImage.SaveAsPng(output);
+                    }
+                }
+            }
         }
     }
 
