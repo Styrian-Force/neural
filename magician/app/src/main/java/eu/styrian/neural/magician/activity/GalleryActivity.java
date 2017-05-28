@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -249,7 +250,6 @@ public class GalleryActivity extends AppCompatActivity {
 
                         if (status == ImageTaskStatus.FINISHED) {
                             getImage(imageTask);
-                            resetControls();
                             return;
                         } else if (status == ImageTaskStatus.ERROR) {
                             Log.d(this.getClass().toString(), "Error in image task.");
@@ -292,8 +292,8 @@ public class GalleryActivity extends AppCompatActivity {
                             Log.i("", "neki - success" + response.body().contentLength());
                             Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
                             imageView.setImageBitmap(bitmap);
+                            goToImageView(bitmap);
                         }
-                        resetControls();
                     }
                 });
     }
@@ -314,5 +314,24 @@ public class GalleryActivity extends AppCompatActivity {
 
         Bitmap bitmap = BitmapFactory.decodeStream(fis);
         return bitmap;
+    }
+
+    private void goToImageView(final Bitmap bitmap) {
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                Log.d(GalleryActivity.class.toString(), "GOTO Image View");
+                Intent intent = new Intent(getApplicationContext(), ImageViewActivity.class);
+                //ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                //bitmap.compress(Bitmap.CompressFormat.PNG, 50, bs);
+                //intent.putExtra("byteArray", bs.toByteArray());
+                //intent.putExtra("bitmap", bitmap);
+                intent.putExtra("neki", "neki");
+                resetControls();
+                startActivity(intent);
+            }
+        });
+
     }
 }

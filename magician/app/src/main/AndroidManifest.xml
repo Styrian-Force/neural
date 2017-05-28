@@ -13,8 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name="eu.styrian.neural.magician.activity.MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,10 +22,9 @@
                 <service android:name=".api.interfaces.ImageService" />
             </intent-filter>
         </activity>
-
-        <activity android:name="eu.styrian.neural.magician.activity.GalleryActivity"></activity>
-
-        <activity android:name="eu.styrian.neural.magician.activity.CameraActivity" ></activity>
+        <activity android:name=".activity.GalleryActivity" />
+        <activity android:name=".activity.CameraActivity" />
+        <activity android:name=".activity.ImageViewActivity"></activity>
     </application>
 
 </manifest>
