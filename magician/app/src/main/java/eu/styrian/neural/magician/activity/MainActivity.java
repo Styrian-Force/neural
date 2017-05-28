@@ -15,13 +15,10 @@ import butterknife.OnClick;
 import eu.styrian.neural.magician.R;
 import eu.styrian.neural.magician.api.models.ImageTask;
 import eu.styrian.neural.magician.api.models.ImageTaskStatus;
-import eu.styrian.neural.magician.api.models.Post;
-import eu.styrian.neural.magician.api.models.Value;
 import eu.styrian.neural.magician.api.utils.ApiServiceFactory;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {

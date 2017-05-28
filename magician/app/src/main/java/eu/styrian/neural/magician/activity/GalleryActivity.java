@@ -21,6 +21,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import eu.styrian.neural.magician.R;
 import eu.styrian.neural.magician.api.interfaces.ImageService;
+import eu.styrian.neural.magician.api.interfaces.ImageTaskService;
+import eu.styrian.neural.magician.api.models.ImageTask;
 import eu.styrian.neural.magician.api.models.Value;
 import eu.styrian.neural.magician.api.request.ImageRequestFactory;
 import eu.styrian.neural.magician.api.utils.ApiServiceFactory;
@@ -47,8 +49,8 @@ public class GalleryActivity extends AppCompatActivity {
     @BindView(R.id.button_send)
     public Button buttonSend;
 
-    private ImageService imageService;
-    private static boolean firstLoad = true;
+    private ImageService _imageService;
+    private ImageTaskService _imageTaskService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +58,16 @@ public class GalleryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallery);
         ButterKnife.bind(this);
 
-        this.imageService = ApiServiceFactory.getImageService();
+        this._imageService = ApiServiceFactory.getImageService();
+        this._imageTaskService = ApiServiceFactory.getImageTaskService();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
-                String[] filePathColumn = { MediaStore.Images.Media.DATA };
-                Cursor cursor = this.getContentResolver().query(selectedImageUri, filePathColumn, null, null, null);
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                selectedImagePath= cursor.getString(columnIndex);
-                cursor.close();
+
+                selectedImagePath = getPath1(selectedImageUri);
 
                 imageView.setImageURI(selectedImageUri);
                 Log.d("", "ssss" + selectedImagePath);
@@ -97,6 +96,17 @@ public class GalleryActivity extends AppCompatActivity {
                 cursor.close();
             }
         }
+    }
+
+    public String getPath1(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(projection[0]);
+        String filePath = cursor.getString(columnIndex);
+        cursor.close();
+        return cursor.getString(column_index);
     }
 
     @OnClick(R.id.button_load)
@@ -178,11 +188,11 @@ public class GalleryActivity extends AppCompatActivity {
                 });
                */
 
-        Observable<Response<ResponseBody>> onImage = imageService.post(imageFileBody);
+        Observable<ImageTask> onImage = _imageService.post(imageFileBody);
         Log.i("", "neki - ");
         onImage.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<ResponseBody>>() {
+                .subscribe(new Subscriber<ImageTask>() {
                     @Override
                     public final void onCompleted() {
                     }
@@ -193,17 +203,42 @@ public class GalleryActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public final void onNext(Response<ResponseBody> response) {
-                        Log.d("success", response.body() + " asd");
-                        Log.i("", "neki - success" + response.code());
-                        if (response.isSuccessful()) {
-                            Log.i("", "neki - success" + response.body().contentLength());
-                            Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
-                            imageView.setImageBitmap(bitmap);
-                        }
+                    public final void onNext(ImageTask imageTask) {
+                        checkImageTaskStatus(imageTask);
                         buttonSend.setEnabled(true);
                     }
                 });
     }
+
+
+    public void checkImageTaskStatus(ImageTask imageTaskIn) {
+        if(imageTaskIn == null) {
+            Log.d(this.getClass().toString(), "ImageTask in null.");
+            return;
+        }
+        
+        Observable<ImageTask> onImageTask = _imageTaskService.getById(imageTaskIn.getJobId());
+
+        onImageTask.subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ImageTask>() {
+                    @Override
+                    public final void onCompleted() {
+                    }
+
+                    @Override
+                    public final void onError(Throwable e) {
+                        Log.d("error", e.getMessage());
+                    }
+
+                    @Override
+                    public final void onNext(ImageTask imageTask) {
+                        Log.d(this.getClass().toString(), "imageTask: " + imageTask.getJobId());
+                        //checkImageTaskStatus(imageTask);
+
+                    }
+                });
+    }
+
 
 }
