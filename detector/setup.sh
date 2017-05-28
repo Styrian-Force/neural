@@ -4,7 +4,7 @@ if [ -d "$weightsDir" ]; then
 fi
 
 mkdir $weightsDir
-#wget https://pjreddie.com/media/files/yolo.weights -P $weightsDir
+wget https://pjreddie.com/media/files/yolo.weights -P $weightsDir
 #wget https://pjreddie.com/media/files/tiny-yolo.weights -P $weightsDir
 
 cd data/labels
