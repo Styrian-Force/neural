@@ -156,7 +156,7 @@ namespace Butler.Services
                 }
                 catch (IOException e)
                 {
-                    this._logger.LogError("Erro when serializing ImageTask: " + e.StackTrace);
+                    //this._logger.LogError("Erro when serializing ImageTask: " + e.StackTrace);
                     throw e;
                 }
             }
@@ -174,9 +174,23 @@ namespace Butler.Services
                     return null;
                 }
 
-                ImageTask imageTask = JsonConvert.DeserializeObject<ImageTask>(filePath);
+                try
+                {
+                    using (StreamReader reader = File.OpenText(filePath))
+                    {
+                        string json = reader.ReadToEnd();
+                        ImageTask imageTask = JsonConvert.DeserializeObject<ImageTask>(json);
+                        //this._logger.LogDebug(json);
+                        return imageTask;
+                    }
+                }
+                catch (IOException e)
+                {
+                    this._logger.LogError("Erro when deserializing ImageTask: " + e.StackTrace);
+                    throw e;
+                }
+
             }
-            return null;
         }
     }
 }

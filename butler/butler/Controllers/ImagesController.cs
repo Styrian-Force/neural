@@ -24,7 +24,7 @@ namespace Butler.Controllers
     [Route("api/[controller]")]
     public class ImagesController : Controller
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<ImagesController> _logger;
         private readonly IDetectorService _detectorService;
         private readonly IArtistService _artistService;
         private readonly IImageService _imageService;
@@ -51,7 +51,7 @@ namespace Butler.Controllers
             this._imageTaskStatusService = taskStatusService;
         }
 
-        // GET: api/values
+        // GET: api/images
         [HttpGet]
         public IEnumerable<string> Get()
         {
@@ -64,7 +64,7 @@ namespace Butler.Controllers
             ImageTask imageTask = new ImageTask();
             imageTask.JobId = id;
 
-            Console.WriteLine("Id: " + id);
+            //Console.WriteLine("Id: " + id);
             // TODO: Change to artist
             string detectorImagePath = this._fileService.GetDetectorImagePathWithExt(imageTask);
 
@@ -74,7 +74,7 @@ namespace Butler.Controllers
             }
 
             var detectorImage = System.IO.File.OpenRead(detectorImagePath);
-            return File(detectorImage, "image/png");
+            return File(detectorImage, "image/png");            
         }
 
         [HttpPost]
@@ -143,7 +143,7 @@ namespace Butler.Controllers
                 Console.WriteLine("ARTIST_END");
 
                 this._imageService.MergeImages(imageTask);
-                
+
                 Console.WriteLine("IMAGE_SERVICE_END");
 
                 string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
@@ -162,16 +162,18 @@ namespace Butler.Controllers
             //return StatusCode(200);
         }
 
-        // PUT api/values/5
+        // PUT api/images/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody]string value)
         {
+            throw new NotImplementedException();
         }
 
-        // DELETE api/values/5
+        // DELETE api/images/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+            throw new NotImplementedException();
         }
 
     }
