@@ -26,7 +26,6 @@ namespace Butler.Controllers
     {
         private readonly ILogger<ImagesController> _logger;
         private readonly IDetectorService _detectorService;
-        private readonly IArtistService _artistService;
         private readonly IImageService _imageService;
         private readonly IFileService _fileService;
         private readonly IIdService _idService;
@@ -35,7 +34,6 @@ namespace Butler.Controllers
         public ImagesController(
             ILogger<ImagesController> logger,
             IDetectorService detectorService,
-            IArtistService artistService,
             IImageService imageService,
             IFileService fileService,
             IIdService idService,
@@ -45,7 +43,6 @@ namespace Butler.Controllers
             this._logger = logger;
             this._detectorService = detectorService;
             this._imageService = imageService;
-            this._artistService = artistService;
             this._fileService = fileService;
             this._idService = idService;
             this._imageTaskStatusService = taskStatusService;
@@ -151,40 +148,9 @@ namespace Butler.Controllers
             using (var fileStream = new FileStream(originalImagePath, FileMode.Create))
             {
                 file.CopyTo(fileStream);
-
-                //imageTask.Task = new Task(() => { });
-
                 this._detectorService.AddToQueue(imageTask);
-
-                //imageTask.Task.Wait();
-                //_logger.LogDebug("DETECTOR_END");
-
-                //List<ImageTaskStatus> statuses = _imageTaskStatusService.ReadLog(imageTask);
-
-                //imageTask.Task = new Task(() => { });
-
-                //this._artistService.AddToQueue(imageTask);
-                //imageTask.Task.Wait();
-                //_logger.LogDebug("ARTIST_END");
-
-                //this._imageService.MergeImages(imageTask);
-
-                //_logger.LogDebug("IMAGE_SERVICE_END");
-
-                //string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
-                //var mergedImage = System.IO.File.OpenRead(mergedImagePath);
-                //return File(mergedImage, "image/png");
-                /*this._imageTaskStatusService.AddToLog(
-                    imageTask,
-                    ImageTaskStatus.ImageFinished()
-                );
-
-                string mergedImagePath = this._fileService.GetDetectorImagePathWithExt(imageTask);
-                var mergedImage = System.IO.File.OpenRead(mergedImagePath);
-                statuses = _imageTaskStatusService.ReadLog(imageTask);
-                return File(mergedImage, "image/png");*/
             }
-            //return StatusCode(200);
+            
             return Ok(imageTask);
         }
 

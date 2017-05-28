@@ -10,7 +10,8 @@ namespace Butler.Models
         ImageInArtist,
         ImageInMergeQueue,
         ImageMerging,
-        ImageFinished
+        ImageFinished,
+        Error
     }
 }
 
