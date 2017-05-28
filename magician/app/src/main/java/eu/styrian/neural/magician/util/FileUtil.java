@@ -26,8 +26,8 @@ public class FileUtil {
         File outputDir = context.getCacheDir(); // context being the Activity pointer
         File outputFile = null;
         try {
-            String timeStamp = new SimpleDateFormat("_yyyy.MM.dd.HH.mm.ss").format(new Date());
-            outputFile = File.createTempFile(fileName + timeStamp, extensionName, outputDir);
+            String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+            outputFile = File.createTempFile(fileName + "_" + timeStamp , "." +extensionName, outputDir);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -45,6 +45,9 @@ public class CameraImageActivity extends AppCompatActivity {
     @OnClick(R.id.button_accept_image)
     public void acceptImage(View view) {
         Log.d("asd", "BUTTON ACCEPT IMAGE!");
+        Intent intent = new Intent(getApplicationContext(), ImageViewActivity.class);
+        intent.putExtra("imagePath", imageFile.getAbsolutePath());
+        startActivity(intent);
     }
 
     @OnClick(R.id.button_reject_image)

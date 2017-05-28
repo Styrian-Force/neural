@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -30,6 +32,7 @@ import android.widget.Toast;
 import com.google.android.cameraview.AspectRatio;
 import com.google.android.cameraview.CameraView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,6 +44,7 @@ import java.util.Set;
 import eu.styrian.neural.magician.R;
 import eu.styrian.neural.magician.activity.fragment.AspectRatioFragment;
 import eu.styrian.neural.magician.util.FileUtil;
+import eu.styrian.neural.magician.util.ImageProcessingUtil;
 
 public class CameraActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback,
@@ -236,8 +240,15 @@ public class CameraActivity extends AppCompatActivity implements
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(TAG, "onPictureTaken " + data.length);
-            Toast.makeText(cameraView.getContext(), R.string.picture_taken, Toast.LENGTH_SHORT)
-                    .show();
+
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            Bitmap resized = ImageProcessingUtil.resizeBitmap(bitmap, 500, bitmap.getHeight() * 500 / bitmap.getWidth());
+
+            ByteArrayOutputStream blob = new ByteArrayOutputStream();
+            resized.compress(Bitmap.CompressFormat.JPEG, 75, blob);
+            final byte[] resizedData = blob.toByteArray();
+
+            Toast.makeText(cameraView.getContext(), R.string.picture_taken, Toast.LENGTH_SHORT).show();
             getBackgroundHandler().post(new Runnable() {
                 @Override
                 public void run() {
@@ -246,7 +257,7 @@ public class CameraActivity extends AppCompatActivity implements
                     OutputStream os = null;
                     try {
                         os = new FileOutputStream(outputFile);
-                        os.write(data);
+                        os.write(resizedData);
                         os.close();
 
                         toCameraImageActivity(outputFile.getPath());
