@@ -16,4 +16,5 @@ public interface ImageTaskService {
     @GET("api/imageTasks/{id}")
     Observable<ImageTask> getById(@Path("id") String id);
 
+    
 }
