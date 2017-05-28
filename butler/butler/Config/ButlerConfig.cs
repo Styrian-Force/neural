@@ -16,5 +16,6 @@ namespace Butler.Config
         public static string MERGED_OUTPUT = "merged_output";
         public static string MERGED_OUTPUT_WITH_EXT = MERGED_OUTPUT + ".png";
         public static string TASK_STATUS_LOG = "task_status_log.json";
+        public static string IMAGE_TASK = "image_task.json";
     }
 }

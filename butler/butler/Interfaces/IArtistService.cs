@@ -6,9 +6,8 @@ using Butler.Models;
 
 namespace Butler.Interfaces
 {
-    public interface IArtistService
+    public interface IArtistService : Queueable<ImageTask>  
     {
-        void AddToQueue(ImageTask imageTask);
-
+        // add more if needed
     }
 }

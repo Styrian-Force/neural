@@ -8,7 +8,7 @@ Ubuntu 16.04
 1. Install CUDA for Ubuntu 16.04
  - https://developer.nvidia.com/cuda-downloads
 
-sudo dpkg -i cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64.deb
+sudo apt install ./cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64.deb
 sudo apt-get update
 sudo apt-get install cuda
 
@@ -16,12 +16,38 @@ sudo apt-get install cuda
 Section 6.1:
     -http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#mandatory-post
 
+3. Install NVIDIA cuDNN
+cd folder/extracted/contents
+sudo cp -P include/cudnn.h /usr/local/cuda-8.0/include
+sudo cp -P lib64/libcudnn* /usr/local/cuda-8.0/lib64
+sudo chmod a+r /usr/local/cuda-8.0/lib64/libcudnn*
+
+copy include/cudnn.h and the libraries in 
+lib64/ to 
+/usr/local/cuda-8.0/include and 
+/usr/local/cuda-8.0/lib64
+
 ######################################################
 #### PREPARE DARKNET
 
-Weights:
-- https://pjreddie.com/darknet/yolo/
+1. Weights:
+- 	
 - put them in weights/ directory
 
-Labels:
+2. Install futura-normal font
+sudo apt-get install ttf-mscorefonts-installer
+sudo fc-cache -f -v
+
+Copy the .ttf file and paste it inside ~/.fonts folder, ie /home/username/.fonts folder. Create one if you dont already have one.
+
+sudo fc-cache -fv
+
+
+2. Labels:
 - python3 data/labels/make_labels.py
+
+
+######################################################
+#### EXAMPLE
+./detector detect cfg/yolo.cfg weigths/yolo.weights resources/dog.jpg
+

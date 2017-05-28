@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -45,10 +46,26 @@ namespace Butler.Models
                 "The Artist is performing the finishing touches. "
             );
         }
+
         public static ImageTaskStatus ImageFinished() {
             return new ImageTaskStatus(
                 ImageTaskStatusCode.ImageFinished, 
                 "Work on the image is finished! "
+            );
+        }
+
+        public static ImageTaskStatus ImageMerging() {
+            return new ImageTaskStatus(
+                ImageTaskStatusCode.ImageMerging, 
+                "Images are being merged. "
+            );
+        }
+
+        internal static ImageTaskStatus ImageInMergeQueue()
+        {
+            return new ImageTaskStatus(
+                ImageTaskStatusCode.ImageInMergeQueue, 
+                "Images are in merge queue. "
             );
         }
 

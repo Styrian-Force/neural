@@ -7,10 +7,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Butler.Interfaces
 {
-    public interface IImageService
+    public interface IImageService : Queueable<ImageTask>  
     {
-        void MergeImages(ImageTask imageTask);
-
+        
         bool FileTypeSupported(IFormFile file);
 
     }

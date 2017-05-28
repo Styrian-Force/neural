@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Butler.Config;
 using Butler.Interfaces;
 using Butler.Models;
@@ -18,20 +19,23 @@ namespace Butler.Services
         private ILogger<DetectorService> _logger;
         private IFileService _fileService;
         private readonly IImageTaskStatusService _imageTaskStatusService;
+        private readonly IArtistService _artistService;
 
         private Process detectorProcess;
-        private Queue<ImageTask> queue;
+        private readonly Queue<ImageTask> queue;
 
         public DetectorService(
             ILogger<DetectorService> logger,
             IFileService fileSerice,
-            IImageTaskStatusService taskStatusService
+            IImageTaskStatusService taskStatusService,
+            IArtistService artistService
         )
         {
-            Console.WriteLine("DETECTOR_SERVICE: DetectorService konstruktor");
             this._logger = logger;
+            _logger.LogDebug("DETECTOR_SERVICE: DetectorService konstruktor");
             this._fileService = fileSerice;
             this._imageTaskStatusService = taskStatusService;
+            this._artistService = artistService;
 
             this.queue = new Queue<ImageTask>();
 
@@ -54,6 +58,7 @@ namespace Butler.Services
             lock (queue)
             {
                 queue.Enqueue(imageTask);
+                imageTask.Status = ImageTaskStatusCode.ImageInDetectorQueue;
                 this._imageTaskStatusService.AddToLog(
                     imageTask,
                     ImageTaskStatus.ImageInDetectorQueue()
@@ -71,7 +76,7 @@ namespace Butler.Services
             info.RedirectStandardInput = true;
             info.RedirectStandardError = true;
             info.WorkingDirectory = ButlerConfig.NEURAL_GIT_DIR + "detector";
-            info.FileName = info.WorkingDirectory + "/darknet";
+            info.FileName = info.WorkingDirectory + "/detector";
 
             string arguments = "detect";
             arguments += " " + WEIGHTS.CfgPath;
@@ -99,12 +104,11 @@ namespace Butler.Services
 
                 if (line == "DETECTOR_READY")
                 {
-                    Console.WriteLine("DETECTOR IS READY");
+                    _logger.LogDebug("DETECTOR IS READY");
                     break;
                 }
             }
 
-            Console.WriteLine("DoWork thread finished! DetectorReady!");
             this.HandleQueue();
         }
 
@@ -124,6 +128,7 @@ namespace Butler.Services
 
                 if (imageTask != null)
                 {
+                    imageTask.Status = ImageTaskStatusCode.ImageInDetector;
                     this._imageTaskStatusService.AddToLog(
                         imageTask,
                         ImageTaskStatus.ImageInDetector()
@@ -150,7 +155,7 @@ namespace Butler.Services
                         if(message == null) {
                             continue;
                         }
-                        Debug.WriteLine("DETECTOR_OUTPUT: " + message);
+                        _logger.LogDebug("DETECTOR_OUTPUT: " + message);
                         if (message == "FINISHED_SUCCESSFULLY")
                         {                            
                             break;
@@ -163,9 +168,9 @@ namespace Butler.Services
                     }
                     imageTask.CroppedImages = croppedImages;
                     _logger.LogDebug(originalImagePath + " successfully created.");
-                    Console.WriteLine("ID:" + imageTask.JobId);
+                    _logger.LogDebug("ID:" + imageTask.JobId);
 
-                    imageTask.task.Start();
+                    this._artistService.AddToQueue(imageTask);
                 }
             }
         }

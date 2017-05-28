@@ -17,25 +17,27 @@ namespace Butler.Services
         private static readonly int MAX_ITERATIONS = 2;
         private static readonly int PRINT_ITERATIONS = 1;
         private static readonly bool ORIGINAL_COLORS = false;
-        private static readonly string STYLE_MODEL = "udnie.ckpt";
+        private static readonly StyleModel STYLE_MODEL = StyleModel.UDNIE;
 
-        private ILogger<ArtistService> _logger;
-        private IFileService _fileService;
+        private readonly ILogger<ArtistService> _logger;
+        private readonly IFileService _fileService;
         private readonly IImageTaskStatusService _imageTaskStatusService;
+        private readonly IImageService _imageService;
 
-        private Queue<ImageTask> queue;
+        private readonly Queue<ImageTask> queue;
 
         public ArtistService(
             ILogger<ArtistService> logger,
             IFileService fileService,
-            IImageTaskStatusService taskStatusService
+            IImageTaskStatusService taskStatusService,
+            IImageService imageService
         )
         {
-            Console.WriteLine("ALERT_SERVICE: Artist Service constructor");
-
             this._logger = logger;
+            _logger.LogDebug("ALERT_SERVICE: Artist Service constructor");            
             this._fileService = fileService;
             this._imageTaskStatusService = taskStatusService;
+            this._imageService = imageService;
 
             this.queue = new Queue<ImageTask>();
 
@@ -47,6 +49,7 @@ namespace Butler.Services
         {
             lock (queue)
             {
+                imageTask.Status = ImageTaskStatusCode.ImageInArtistQueue;
                 this._imageTaskStatusService.AddToLog(
                     imageTask,
                     ImageTaskStatus.ImageInArtistQueue()
@@ -57,6 +60,7 @@ namespace Butler.Services
 
         private ProcessStartInfo GetArtistProcessInfo(ImageTask imageTask)
         {
+            imageTask.Status = ImageTaskStatusCode.ImageInArtist;
             this._imageTaskStatusService.AddToLog(
                 imageTask,
                 ImageTaskStatus.ImageInArtist()
@@ -75,7 +79,7 @@ namespace Butler.Services
             string arguments = "evaluate.py";
             arguments += " --allow-different-dimensions";
             arguments += " --device " + DEVICE.Id;
-            arguments += " --checkpoint style_models/" + STYLE_MODEL;
+            arguments += " --checkpoint style_models/" + STYLE_MODEL.Name;
             arguments += " --in-path " + this._fileService.GetDetectorDir(imageTask);
 
             //arguments += " --print_iterations " + PRINT_ITERATIONS;
@@ -124,8 +128,8 @@ namespace Butler.Services
                         }
                     }
 
-                    Console.WriteLine("ID:" + imageTask.JobId);
-                    imageTask.task.Start();
+                    _logger.LogDebug("ID:" + imageTask.JobId);
+                    this._imageService.AddToQueue(imageTask);
                 }
             }
         }

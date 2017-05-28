@@ -6,9 +6,9 @@ using Butler.Models;
 
 namespace Butler.Interfaces
 {
-    public interface IDetectorService
+    public interface IDetectorService : Queueable<ImageTask>  
     {
-        void AddToQueue(ImageTask imageTask);
+        // add more if needed
 
     }
 }

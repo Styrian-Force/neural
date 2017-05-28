@@ -20,8 +20,8 @@ namespace Butler.Services
             ILogger<FileService> logger
         )
         {
-            Console.WriteLine("FILE_SERVICE: File Service constructor");
             this._logger = logger;
+            _logger.LogDebug("FILE_SERVICE: File Service constructor");            
             CreateDir(ButlerConfig.DATABASE_DIR);
         }
 
@@ -106,6 +106,12 @@ namespace Butler.Services
             string workingDir = GetWorkingDir(imageTask);
             string taskStatusLogPath = workingDir + ButlerConfig.TASK_STATUS_LOG;
             return taskStatusLogPath;
+        }
+
+        public  string GetImageTaskPath(ImageTask imageTask) {
+            string workingDir = GetWorkingDir(imageTask);
+            string imageTaskPath = workingDir + ButlerConfig.IMAGE_TASK;
+            return imageTaskPath;
         }
     }
 
