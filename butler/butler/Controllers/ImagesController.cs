@@ -58,27 +58,44 @@ namespace Butler.Controllers
             return new string[] { "valuei", "valueii" };
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        [HttpGet("{id}/detector")]
+        public IActionResult GetDetector(string id)
         {
             ImageTask imageTask = new ImageTask();
             imageTask.JobId = id;
 
-            //_logger.LogDebug("Id: " + id);
-            // TODO: Change to artist
             string detectorImagePath = this._fileService.GetDetectorImagePathWithExt(imageTask);
 
             if (!System.IO.File.Exists(detectorImagePath))
             {
-                return StatusCode(404);
+                return NotFound("Detected image doesn't exist");
             }
 
             var detectorImage = System.IO.File.OpenRead(detectorImagePath);
             return File(detectorImage, "image/png");            
         }
 
+        [HttpGet("{id}")]
+        public IActionResult Get(string id)
+        {
+            ImageTask imageTask = new ImageTask();
+            imageTask.JobId = id;
+            
+            string mergedImagePath = this._fileService.GetMergedImagePathWithExt(imageTask);
+
+            if (!System.IO.File.Exists(mergedImagePath))
+            {
+                return NotFound("Merged image doesn't exist");
+            }
+
+            var mergedImage = System.IO.File.OpenRead(mergedImagePath);
+            return File(mergedImage, "image/png");            
+        }
+
+        
+
         [HttpPost]
-        public async Task<IActionResult> Post()
+        public IActionResult Post()
         {
             IFormFileCollection files = HttpContext.Request.Form.Files;
             _logger.LogInformation("Length of files: " + files.Count);
