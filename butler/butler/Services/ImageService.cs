@@ -55,8 +55,7 @@ namespace Butler.Services
                 imageTask.Status = ImageTaskStatusCode.ImageInMergeQueue;
                 this._imageTaskStatusService.AddToLog(
                     imageTask,
-                   // TODO: IMPLEMENT real message
-                   ImageTaskStatus.ImageInDetectorQueue()
+                   ImageTaskStatus.ImageInMergeQueue()
                 );
             }
         }
@@ -168,8 +167,7 @@ namespace Butler.Services
                     imageTask.Status = ImageTaskStatusCode.ImageMerging;
                     this._imageTaskStatusService.AddToLog(
                         imageTask,
-                       // TODO: IMPLEMENT real message
-                       ImageTaskStatus.ImageInDetectorQueue()
+                       ImageTaskStatus.ImageMerging()
                     );
 
                     Image<Rgba32> finalImage = this.MergeImages(imageTask);
@@ -186,8 +184,7 @@ namespace Butler.Services
                     imageTask.Status = ImageTaskStatusCode.ImageFinished;
                     this._imageTaskStatusService.AddToLog(
                         imageTask,
-                       // TODO: IMPLEMENT real message
-                       ImageTaskStatus.ImageInDetectorQueue()
+                       ImageTaskStatus.ImageFinished()
                     );
                 }
             }

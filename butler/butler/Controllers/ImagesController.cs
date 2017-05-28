@@ -92,7 +92,16 @@ namespace Butler.Controllers
             return File(mergedImage, "image/png");            
         }
 
-        
+        [HttpGet("{id}/status")]
+        public IEnumerable<ImageTaskStatus> GetStatus(string id)
+        {
+            ImageTask imageTask = new ImageTask();
+            imageTask.JobId = id;
+
+            List<ImageTaskStatus> taskStatuses = this._imageTaskStatusService.ReadLog(imageTask);
+            
+            return taskStatuses;
+        }
 
         [HttpPost]
         public IActionResult Post()
