@@ -105,6 +105,7 @@ namespace Butler.Controllers
             ImageTask imageTask = new ImageTask();
             imageTask.JobId = this._idService.GenerateId();
             imageTask.OriginalExtension = Path.GetExtension(file.FileName);
+            imageTask.Status = ImageTaskStatusCode.ImageUploaded;
 
             string workingDir = this._fileService.GetWorkingDir(imageTask);
             string detectorDir = this._fileService.GetDetectorDir(imageTask);
@@ -126,19 +127,19 @@ namespace Butler.Controllers
                 file.CopyTo(fileStream);
 
 
-                imageTask.task = new Task(() => { });
+                imageTask.Task = new Task(() => { });
 
                 this._detectorService.AddToQueue(imageTask);
 
-                imageTask.task.Wait();
+                imageTask.Task.Wait();
                 Console.WriteLine("DETECTOR_END");
 
                 List<ImageTaskStatus> statuses = _imageTaskStatusService.ReadLog(imageTask);
 
-                imageTask.task = new Task(() => { });
+                imageTask.Task = new Task(() => { });
 
                 this._artistService.AddToQueue(imageTask);
-                imageTask.task.Wait();
+                imageTask.Task.Wait();
                 Console.WriteLine("ARTIST_END");
 
                 this._imageService.MergeImages(imageTask);

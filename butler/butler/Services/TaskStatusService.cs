@@ -5,19 +5,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 using Butler.Interfaces;
 using Butler.Models;
+using Newtonsoft.Json;
 
 namespace Butler.Services
 {
     public class ImageTaskStatusService : IImageTaskStatusService
     {
+        private ILogger<ImageTaskStatusService> _logger;
         private readonly IFileService _fileService;
 
+        private static readonly Object LOCK = new Object();
+
         public ImageTaskStatusService(
+            ILogger<ImageTaskStatusService> logger,
             IFileService fileService
         )
         {
+            this._logger = logger;
             this._fileService = fileService;
         }
 
@@ -72,6 +79,7 @@ namespace Butler.Services
                     File.WriteAllText(taskStatusLogPath, logs);
                 }
             );
+            this.SerializeImageTask(imageTask);
         }
 
         public void AddToLog(ImageTask imageTask, ImageTaskStatus status)
@@ -93,6 +101,7 @@ namespace Butler.Services
                     File.WriteAllText(taskStatusLogPath, logs);
                 }
             );
+            this.SerializeImageTask(imageTask);
         }
 
         private List<ImageTaskStatus> ReadLogWithoutLock(ImageTask imageTask)
@@ -124,6 +133,50 @@ namespace Butler.Services
             );
 
             return unreadTasks;
+        }
+
+        public void SerializeImageTask(ImageTask imageTask)
+        {
+            lock (LOCK)
+            {
+                String json = imageTask.ToJson();
+                String filePath = this._fileService.GetImageTaskPath(imageTask);
+
+                try
+                {
+                    using (FileStream file = File.Open(filePath, FileMode.Create))
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter(file))
+                        {
+                            streamWriter.WriteLine(json);
+                            streamWriter.Dispose();
+                            this._logger.LogDebug(json);
+                        }
+                    }
+                }
+                catch (IOException e)
+                {
+                    this._logger.LogError("Erro when serializing ImageTask: " + e.StackTrace);
+                    throw e;
+                }
+            }
+        }
+
+        public ImageTask DeserializeImageTask(string id)
+        {
+            lock (LOCK)
+            {
+                ImageTask temp = new ImageTask();
+                temp.JobId = id;
+                String filePath = this._fileService.GetImageTaskPath(temp);
+                if (!File.Exists(filePath))
+                {
+                    return null;
+                }
+
+                ImageTask imageTask = JsonConvert.DeserializeObject<ImageTask>(filePath);
+            }
+            return null;
         }
     }
 }

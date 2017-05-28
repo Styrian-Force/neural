@@ -13,5 +13,8 @@ namespace Butler.Interfaces
         void RewriteLog(ImageTask imageTask, List<ImageTaskStatus> statuses);
         void AddToLog(ImageTask imageTask, ImageTaskStatus status);
         List<ImageTaskStatus> ReadLog(ImageTask imageTask);
+
+        void SerializeImageTask(ImageTask imageTask);
+        ImageTask DeserializeImageTask(string id);
     }
 }

@@ -125,7 +125,7 @@ namespace Butler.Services
                     }
 
                     Console.WriteLine("ID:" + imageTask.JobId);
-                    imageTask.task.Start();
+                    imageTask.Task.Start();
                 }
             }
         }

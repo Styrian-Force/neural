@@ -107,6 +107,12 @@ namespace Butler.Services
             string taskStatusLogPath = workingDir + ButlerConfig.TASK_STATUS_LOG;
             return taskStatusLogPath;
         }
+
+        public  string GetImageTaskPath(ImageTask imageTask) {
+            string workingDir = GetWorkingDir(imageTask);
+            string imageTaskPath = workingDir + ButlerConfig.IMAGE_TASK;
+            return imageTaskPath;
+        }
     }
 
 }

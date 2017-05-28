@@ -165,7 +165,7 @@ namespace Butler.Services
                     _logger.LogDebug(originalImagePath + " successfully created.");
                     Console.WriteLine("ID:" + imageTask.JobId);
 
-                    imageTask.task.Start();
+                    imageTask.Task.Start();
                 }
             }
         }
