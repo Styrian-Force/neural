@@ -8,7 +8,7 @@ Ubuntu 16.04
 1. Install CUDA for Ubuntu 16.04
  - https://developer.nvidia.com/cuda-downloads
 
-sudo dpkg -i cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64.deb
+sudo apt install ./cuda-repo-ubuntu1604-8-0-local-ga2_8.0.61-1_amd64.deb
 sudo apt-get update
 sudo apt-get install cuda
 
@@ -16,7 +16,7 @@ sudo apt-get install cuda
 Section 6.1:
     -http://docs.nvidia.com/cuda/cuda-installation-guide-linux/#mandatory-post
 
-3. cudnn
+3. Install NVIDIA cuDNN
 cd folder/extracted/contents
 sudo cp -P include/cudnn.h /usr/local/cuda-8.0/include
 sudo cp -P lib64/libcudnn* /usr/local/cuda-8.0/lib64
@@ -49,5 +49,5 @@ sudo fc-cache -fv
 
 ######################################################
 #### EXAMPLE
-./darknet detect cfg/yolo.cfg yolo.weights data/dog.jpg
+./detector detect cfg/yolo.cfg weigths/yolo.weights resources/dog.jpg
 

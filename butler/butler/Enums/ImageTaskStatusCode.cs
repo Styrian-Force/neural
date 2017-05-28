@@ -8,6 +8,8 @@ namespace Butler.Models
         ImageInDetector,
         ImageInArtistQueue,
         ImageInArtist,
+        ImageInMergeQueue,
+        ImageMerging,
         ImageFinished
     }
 }

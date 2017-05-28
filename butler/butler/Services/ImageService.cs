@@ -21,17 +21,20 @@ namespace Butler.Services
     {
         private ILogger<ImageService> _logger;
         private IFileService _fileService;
+        private IImageTaskStatusService _imageTaskStatusService;
 
         private readonly Queue<ImageTask> queue;
 
         public ImageService(
             ILogger<ImageService> logger,
-            IFileService fileService
+            IFileService fileService,
+            IImageTaskStatusService imageTaskStatusService
         )
         {
             this._logger = logger;
             _logger.LogDebug("IMAGE_SERVICE: Image Service constructor");
             this._fileService = fileService;
+            this._imageTaskStatusService = imageTaskStatusService;
 
             Configuration.Default.AddImageFormat(new JpegFormat());
             Configuration.Default.AddImageFormat(new PngFormat());
@@ -49,11 +52,12 @@ namespace Butler.Services
             lock (queue)
             {
                 queue.Enqueue(imageTask);
-                //imageTask.Status = ImageTaskStatusCode.ImageInDetectorQueue;
-                //this._imageTaskStatusService.AddToLog(
-                //    imageTask,
-                //    ImageTaskStatus.ImageInDetectorQueue()
-                //);
+                imageTask.Status = ImageTaskStatusCode.ImageInMergeQueue;
+                this._imageTaskStatusService.AddToLog(
+                    imageTask,
+                   // TODO: IMPLEMENT real message
+                   ImageTaskStatus.ImageInDetectorQueue()
+                );
             }
         }
 
@@ -161,6 +165,12 @@ namespace Butler.Services
 
                 if (imageTask != null)
                 {
+                    imageTask.Status = ImageTaskStatusCode.ImageMerging;
+                    this._imageTaskStatusService.AddToLog(
+                        imageTask,
+                       // TODO: IMPLEMENT real message
+                       ImageTaskStatus.ImageInDetectorQueue()
+                    );
 
                     Image<Rgba32> finalImage = this.MergeImages(imageTask);
                     MergeTransparent(finalImage, imageTask);
@@ -172,6 +182,13 @@ namespace Butler.Services
                         //image.Quality = quality;
                         finalImage.SaveAsPng(output);
                     }
+
+                    imageTask.Status = ImageTaskStatusCode.ImageFinished;
+                    this._imageTaskStatusService.AddToLog(
+                        imageTask,
+                       // TODO: IMPLEMENT real message
+                       ImageTaskStatus.ImageInDetectorQueue()
+                    );
                 }
             }
         }
