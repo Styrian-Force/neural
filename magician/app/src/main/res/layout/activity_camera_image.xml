@@ -9,11 +9,9 @@
 
     <ImageView
         android:id="@+id/camera_image_view"
-        android:layout_width="119dp"
-        android:layout_height="495dp"
-        android:scaleType="centerInside"
-        tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside" />
 
     <Button
         android:id="@+id/button_accept_image"

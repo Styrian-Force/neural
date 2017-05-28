@@ -2,6 +2,7 @@ package eu.styrian.neural.magician.activity.fragment;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
