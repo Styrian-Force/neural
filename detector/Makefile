@@ -13,7 +13,7 @@ ARCH= -gencode arch=compute_20,code=[sm_20,sm_21] \
 # ARCH=  -gencode arch=compute_52,code=compute_52
 
 VPATH=./src/
-EXEC=darknet
+EXEC=detector
 OBJDIR=./obj/
 
 CC=gcc
