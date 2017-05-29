@@ -3,15 +3,18 @@ package eu.styrian.neural.magician.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -25,6 +28,7 @@ import eu.styrian.neural.magician.api.models.ImageTask;
 import eu.styrian.neural.magician.api.models.ImageTaskStatus;
 import eu.styrian.neural.magician.api.request.ImageRequestFactory;
 import eu.styrian.neural.magician.api.utils.ApiServiceFactory;
+import eu.styrian.neural.magician.util.FileUtil;
 import eu.styrian.neural.magician.util.ImageProcessingUtil;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -39,13 +43,14 @@ public class ImageViewActivity extends AppCompatActivity {
     @BindView(R.id.image_view2)
     public ImageView imageView;
 
-    @BindView(R.id.button_load2)
-    public Button buttonLoad;
+    @BindView(R.id.button_save)
+    public Button buttonSave;
 
     private ImageService _imageService;
     private ImageTaskService _imageTaskService;
 
     private MagicianSpinnerDialog _dialog;
+    private Bitmap bitmap_merged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +72,10 @@ public class ImageViewActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.button_load2)
-    public void clickToGallery() {
-        //Intent i = new Intent(getApplicationContext(), GalleryActivity.class);
-        //startActivity(i);
+    @OnClick(R.id.button_save)
+    public void clickSaveToGallery() {
+        MediaStore.Images.Media.insertImage(getContentResolver(), bitmap_merged, "Styrian neural image", "yolocaust");
+        Toast.makeText(imageView.getContext(), "Slika shranjena", Toast.LENGTH_SHORT).show();
         Log.d(ImageViewActivity.class.toString(), "Button load click!");
     }
 
@@ -90,13 +95,6 @@ public class ImageViewActivity extends AppCompatActivity {
             Log.d("ERROR1", "ni datoteke!!! ne more poslati");
             resetControls();
             return;
-        }
-
-        Bitmap bitmap = getBitmap(file);
-        Bitmap resized = ImageProcessingUtil.resizeBitmap(bitmap, 500, 500);
-
-        if(resized == null) {
-            resetControls();
         }
 
         MultipartBody.Part imageFileBody = ImageRequestFactory.getInstance().generatePostRequest(file);
@@ -153,8 +151,10 @@ public class ImageViewActivity extends AppCompatActivity {
                         Log.i("", "neki - success" + response.code());
                         if (response.isSuccessful()) {
                             Log.i("", "neki - success" + response.body().contentLength());
-                            Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
-                            imageView.setImageBitmap(bitmap);
+                            InputStream inputStream = response.body().byteStream();
+                            bitmap_merged = BitmapFactory.decodeStream(inputStream);
+
+                            imageView.setImageBitmap(bitmap_merged);
                             resetControls();
                         }
                     }

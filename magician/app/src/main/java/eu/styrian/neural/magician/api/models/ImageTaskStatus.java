@@ -5,15 +5,15 @@ package eu.styrian.neural.magician.api.models;
  */
 
 public class ImageTaskStatus {
-    public static ImageTaskStatus UPLOADED = new ImageTaskStatus(0, "Uploaded.");
-    public static ImageTaskStatus IN_DETECTOR_QUEUE = new ImageTaskStatus(1, "In Detector queue.");
-    public static ImageTaskStatus IN_DETECTOR = new ImageTaskStatus(2, "In Detector.");
-    public static ImageTaskStatus IN_IMAGE_QUEUE = new ImageTaskStatus(3, "In Artist queue.");
-    public static ImageTaskStatus IN_ARTIST = new ImageTaskStatus(4, "In Artist.");
-    public static ImageTaskStatus IN_MERGE_QUEUE = new ImageTaskStatus(5, "In merge queue.");
-    public static ImageTaskStatus MERGING = new ImageTaskStatus(6, "Is merging.");
+    public static ImageTaskStatus UPLOADED = new ImageTaskStatus(0, "Uploaded");
+    public static ImageTaskStatus IN_DETECTOR_QUEUE = new ImageTaskStatus(1, "In Detector queue");
+    public static ImageTaskStatus IN_DETECTOR = new ImageTaskStatus(2, "In Detector");
+    public static ImageTaskStatus IN_IMAGE_QUEUE = new ImageTaskStatus(3, "In Artist queue");
+    public static ImageTaskStatus IN_ARTIST = new ImageTaskStatus(4, "In Artist");
+    public static ImageTaskStatus IN_MERGE_QUEUE = new ImageTaskStatus(5, "In merge queue");
+    public static ImageTaskStatus MERGING = new ImageTaskStatus(6, "Is merging");
     public static ImageTaskStatus FINISHED = new ImageTaskStatus(7, "Finished!");
-    public static ImageTaskStatus ERROR = new ImageTaskStatus(8, "Error on server.");
+    public static ImageTaskStatus ERROR = new ImageTaskStatus(8, "Error on server");
 
 
     private final int code;
