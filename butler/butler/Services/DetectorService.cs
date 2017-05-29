@@ -172,6 +172,9 @@ namespace Butler.Services
 
                     this._artistService.AddToQueue(imageTask);
                 }
+                else {
+                    Thread.Sleep(20);
+                }
             }
         }
 
