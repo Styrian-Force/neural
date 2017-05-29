@@ -191,6 +191,9 @@ namespace Butler.Services
                        ImageTaskStatus.ImageFinished()
                     );
                 }
+                else {
+                    Thread.Sleep(20);
+                }
             }
         }
     }
