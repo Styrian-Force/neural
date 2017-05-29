@@ -13,10 +13,10 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/button_load2"
+        android:id="@+id/button_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Naloži fotografijo"
+        android:text="Shrani fotografijo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"

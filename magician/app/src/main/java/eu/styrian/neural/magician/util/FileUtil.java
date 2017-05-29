@@ -7,14 +7,20 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by matej on 28.5.2017.
@@ -33,6 +39,31 @@ public class FileUtil {
         }
 
         return outputFile;
+    }
+
+    public static void saveToGallery(String fileName, String extensionName, Context context, InputStream inputStream) {
+        /*String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+        File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DCIM),
+                fileName + "_" + timeStamp + "." +extensionName);*/
+        /*OutputStream os = null;
+
+        try {
+            byte[] buffer = new byte[inputStream.available()];
+            inputStream.read(buffer);
+            os = new FileOutputStream(file);
+            os.write(buffer);
+            os.close();
+        } catch (IOException e) {
+            Log.w(TAG, "Cannot write to " + file, e);
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    // Ignore
+                }
+            }
+        }*/
     }
 
     public static void saveBitmapToFile(File file, Bitmap bitmap) {
