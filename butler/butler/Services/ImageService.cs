@@ -76,7 +76,9 @@ namespace Butler.Services
                         {
                             for (int j = 0; j < transparentPixels.Height; j++)
                             {
-                                if (transparentPixels[i, j].R == 0 && transparentPixels[i, j].B == 0 && transparentPixels[i, j].G == 0)
+                                var a = transparentPixels[i, j];
+
+                                if (transparentPixels[i, j].R == 1 && transparentPixels[i, j].B == 1 && transparentPixels[i, j].G == 1 && transparentPixels[i, j].A == 255)
                                 {
                                     continue;
                                 }
