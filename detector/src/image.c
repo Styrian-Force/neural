@@ -648,6 +648,17 @@ image make_image(int w, int h, int c)
     return out;
 }
 
+image make_green_screen_image(int w, int h, int c)
+{
+    image out = make_empty_image(w,h,c);
+    out.data = calloc(h*w*c, sizeof(float));
+    int i;
+    for(i = 0; i < w*h*c; ++i){
+        out.data[i] = 255;
+    }
+    return out;
+}
+
 image make_random_image(int w, int h, int c)
 {
     image out = make_empty_image(w,h,c);

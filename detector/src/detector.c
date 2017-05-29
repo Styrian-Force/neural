@@ -774,7 +774,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         draw_detections(im, l.w * l.h * l.n, thresh, boxes, probs, names, alphabet, l.classes);
         save_image(im, detector_output);
 
-        image image_box_label = make_image(im.w, im.h, im.c);
+        image image_box_label = make_green_screen_image(im.w, im.h, im.c);
         draw_detections(image_box_label, l.w * l.h * l.n, thresh, boxes, probs, names, alphabet, l.classes);
         save_image(image_box_label, transparent_output);
 

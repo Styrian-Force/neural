@@ -93,6 +93,7 @@ void show_image_collapsed(image p, char *name);
 void print_image(image m);
 
 image make_image(int w, int h, int c);
+image make_green_screen_image(int w, int h, int c);
 image make_random_image(int w, int h, int c);
 image make_empty_image(int w, int h, int c);
 image float_to_image(int w, int h, int c, float *data);
