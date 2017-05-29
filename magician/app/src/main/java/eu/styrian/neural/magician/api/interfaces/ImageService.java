@@ -1,6 +1,7 @@
 package eu.styrian.neural.magician.api.interfaces;
 
 
+import eu.styrian.neural.magician.api.models.ImageTask;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
@@ -20,9 +21,12 @@ public interface ImageService {
     @GET("api/images/{id}")
     Observable<Response<ResponseBody>> getById(@Path("id") String id);
 
+    @GET("api/images/{id}/detector")
+    Observable<Response<ResponseBody>> getByIdDetector(@Path("id") String id);
+
     @Multipart
     @POST("api/images")
-    Observable<Response> post(@Part MultipartBody.Part file);
+    Observable<ImageTask> post(@Part MultipartBody.Part file);
 
 }
 

@@ -3,7 +3,10 @@ package eu.styrian.neural.magician.activity;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,20 +32,27 @@ import android.widget.Toast;
 import com.google.android.cameraview.AspectRatio;
 import com.google.android.cameraview.CameraView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 
 import eu.styrian.neural.magician.R;
 import eu.styrian.neural.magician.activity.fragment.AspectRatioFragment;
+import eu.styrian.neural.magician.util.FileUtil;
+import eu.styrian.neural.magician.util.ImageProcessingUtil;
 
 public class CameraActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback,
         AspectRatioFragment.Listener {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = CameraActivity.class.toString();
+
+    private static final int IMAGE__RESIZE_MAX = 1024;
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
 
@@ -232,24 +242,32 @@ public class CameraActivity extends AppCompatActivity implements
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(TAG, "onPictureTaken " + data.length);
-            Toast.makeText(cameraView.getContext(), R.string.picture_taken, Toast.LENGTH_SHORT)
-                    .show();
+
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            Bitmap resized;
+            if (bitmap.getWidth() > bitmap.getHeight()) {
+                resized = ImageProcessingUtil.resizeBitmap(bitmap, IMAGE__RESIZE_MAX, bitmap.getHeight() * IMAGE__RESIZE_MAX / bitmap.getWidth());
+            } else {
+                resized = ImageProcessingUtil.resizeBitmap(bitmap, bitmap.getWidth() * IMAGE__RESIZE_MAX / bitmap.getHeight(), IMAGE__RESIZE_MAX);
+            }
+
+            ByteArrayOutputStream blob = new ByteArrayOutputStream();
+            resized.compress(Bitmap.CompressFormat.JPEG, 75, blob);
+            final byte[] resizedData = blob.toByteArray();
+
+            Toast.makeText(cameraView.getContext(), R.string.picture_taken, Toast.LENGTH_SHORT).show();
             getBackgroundHandler().post(new Runnable() {
                 @Override
                 public void run() {
-                    File outputDir = getApplicationContext().getCacheDir(); // context being the Activity pointer
-                    File outputFile = null;
-                    try {
-                        outputFile = File.createTempFile("picture", "jpg", outputDir);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-//                    File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "picture.jpg");
+                    File outputFile = FileUtil.createTemporaryFile("camera_image", "jpg", getApplicationContext());
+                    
                     OutputStream os = null;
                     try {
                         os = new FileOutputStream(outputFile);
-                        os.write(data);
+                        os.write(resizedData);
                         os.close();
+
+                        toCameraImageActivity(outputFile.getPath());
                     } catch (IOException e) {
                         Log.w(TAG, "Cannot write to " + outputFile, e);
                     } finally {
@@ -266,6 +284,12 @@ public class CameraActivity extends AppCompatActivity implements
         }
 
     };
+
+    public void toCameraImageActivity(String imageFilePath) {
+        Intent i = new Intent(getApplicationContext(), CameraImageActivity.class);
+        i.putExtra("imageFilePath", imageFilePath);
+        startActivity(i);
+    }
 
     public static class ConfirmationDialogFragment extends DialogFragment {
 

@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="eu.styrian.neural.magician.activity.MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,8 +22,10 @@
                 <service android:name=".api.interfaces.ImageService" />
             </intent-filter>
         </activity>
-        <activity android:name="eu.styrian.neural.magician.activity.GalleryActivity" android:exported="true"></activity>
-        <activity android:name="eu.styrian.neural.magician.activity.CameraActivity" ></activity>
+        <activity android:name=".activity.GalleryActivity" />
+        <activity android:name=".activity.CameraActivity" />
+        <activity android:name=".activity.ImageViewActivity"></activity>
+        <activity android:name=".activity.CameraImageActivity"></activity>
     </application>
 
 </manifest>

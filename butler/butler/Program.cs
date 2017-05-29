@@ -13,7 +13,7 @@ namespace butler
     public class Program
     {
         private static readonly int SERVER_DEFAULT_PORT = 5026;
-        private static readonly string SERVER_URL = "http://localhost";
+        private static readonly string SERVER_URL = "http://0.0.0.0";
         public static Process detectorProcess;
 
         public static void Main(string[] args)

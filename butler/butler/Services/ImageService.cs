@@ -19,6 +19,7 @@ namespace Butler.Services
 {
     public class ImageService : IImageService
     {
+        private static readonly int JPG_QUALITY = 80;
         private ILogger<ImageService> _logger;
         private IFileService _fileService;
         private IImageTaskStatusService _imageTaskStatusService;
@@ -177,8 +178,9 @@ namespace Butler.Services
 
                     using (var output = File.OpenWrite(mergedImagePath))
                     {
-                        //image.Quality = quality;
-                        finalImage.SaveAsPng(output);
+                        JpegEncoderOptions options = new JpegEncoderOptions();
+                        options.Quality = JPG_QUALITY;
+                        finalImage.SaveAsJpeg(output, options);
                     }
 
                     imageTask.Status = ImageTaskStatusCode.ImageFinished;
@@ -191,4 +193,21 @@ namespace Butler.Services
         }
     }
 
+    /*private class JpegEncoderOptions : IJpegEncoderOptions
+    {
+        private int Quality;
+        private bool IgnoreMetadata;
+        private JpegSubsample Subsample;
+        JpegEncoderOptions(int Quality, bool IgnoreMetadata, JpegSubsample Subsample) {
+            this.Quality = Quality;
+            this.IgnoreMetadata = IgnoreMetadata;
+            this.Subsample = Subsample;
+        }
+
+        public int Quality => throw new NotImplementedException();
+
+        public JpegSubsample? Subsample => throw new NotImplementedException();
+
+        public bool IgnoreMetadata => throw new NotImplementedException();
+    }*/
 }

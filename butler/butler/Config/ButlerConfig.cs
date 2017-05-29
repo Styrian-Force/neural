@@ -14,7 +14,7 @@ namespace Butler.Config
         public static string TRANSPARENT_OUTPUT_WITH_EXT = TRANSPARENT_OUTPUT + ".png";
         public static string DETECTOR_OUTPUT_WITH_EXT = DETECTOR_OUTPUT + ".png";
         public static string MERGED_OUTPUT = "merged_output";
-        public static string MERGED_OUTPUT_WITH_EXT = MERGED_OUTPUT + ".png";
+        public static string MERGED_OUTPUT_WITH_EXT = MERGED_OUTPUT + ".jpg";
         public static string TASK_STATUS_LOG = "task_status_log.json";
         public static string IMAGE_TASK = "image_task.json";
     }
