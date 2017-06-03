@@ -20,7 +20,6 @@ Ker obstaja precej knjižnic, ki uporabljajo konvolucijske nevronske mreže za o
 - lastno compilanje knjižnic za uporabo nevronskih mrež
 - dokončanje backaenda:
 	- dodajanje servicev za REST API
-	- 
 
 #### neural v0.2 Changes ####
 - hitrejša detekcija z preddefiniranim stilom:
