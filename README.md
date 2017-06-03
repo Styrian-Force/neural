@@ -1,8 +1,7 @@
 # Interaktivni projekt s pomočjo uporabe konvolucijskih nevronskih mrež (CNN) #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Ker obstaja precej knjižnic, ki uporabljajo konvolucijske nevronske mreže za obdelavo podatkov, smo v okviru tega projekta opravili pregled te panoge strojnega učenja ter implementirali sistem za zaznavo in obdelavo slik s pomočjo knjižnic CNN. Razvili smo klasificiranje objektov v slikah in stiliranje zaznanih regij s prenosom sloga umetniških slik.
 
-### Teoretično ozadje ###
 
 #### Članek na Overleaf ####
 * [Povezava na urejanje članka - Seminar 1](https://www.overleaf.com/8783020xmvxrqdxrjjx)
@@ -58,29 +57,3 @@ This README would normally document whatever steps are necessary to get your app
 	
 PROBLEMI:
 	- počasnost CNN
-
-### What is this repository for? ###
-
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
