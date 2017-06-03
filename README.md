@@ -10,6 +10,19 @@ This README would normally document whatever steps are necessary to get your app
 
 ### Changes ###
 
+#### neural v0.4 Changes ####
+- dodaj izbiro detekcije
+- dodaj dodaj izbiro slogu
+- seminar:
+	- predstavi user case
+	- nadaljne delo
+
+#### neural v0.3 Changes ####
+- lastno compilanje knjižnic za uporabo nevronskih mrež
+- dokončanje backaenda:
+	- dodajanje servicev za REST API
+	- 
+
 #### neural v0.2 Changes ####
 - hitrejša detekcija z preddefiniranim stilom:
 	- https://github.com/lengstrom/fast-style-transfer
