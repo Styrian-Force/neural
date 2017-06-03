@@ -2,12 +2,14 @@
 
 Ker obstaja precej knjižnic, ki uporabljajo konvolucijske nevronske mreže za obdelavo podatkov, smo v okviru tega projekta opravili pregled te panoge strojnega učenja ter implementirali sistem za zaznavo in obdelavo slik s pomočjo knjižnic CNN. Razvili smo klasificiranje objektov v slikah in stiliranje zaznanih regij s prenosom sloga umetniških slik.
 
+### Changes ###
+Konfiguracija posameznih sistemov se nahaja v mapi `other/`.
 
 #### Članek na Overleaf ####
 * [Povezava na urejanje članka - Seminar 1](https://www.overleaf.com/8783020xmvxrqdxrjjx)
 * [Povezava na urejanje članka - Seminar 2](https://www.overleaf.com/9568204fvzkzkfykwbz)
 
-### Changes ###
+
 
 #### neural v0.4 Changes ####
 - dodaj izbiro detekcije
